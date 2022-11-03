@@ -1,2 +1,2 @@
 # kniffel_bing
- Kniffel server von Nick Hillmann, Bennet Jansen, Lionel
+Kniffel server von Nick Hillmann, Bennet Jansen, Lionel
