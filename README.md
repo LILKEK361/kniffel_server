@@ -18,9 +18,19 @@ Befehle:
 .time             = Zeigt die Spielzeit
 .rule             = Zeigt die Übersicht für Punkte
 .sheet [username] = zeigt das Würfelsheet 
-.break            = Übernimmt die Würfel 
+.break            = Übernimmt die Würfel x
 
 =======================================================
+
+Requierments:
+
+-Windows:
+    http://msysgit.github.io/
+    http://nodejs.org/
+
+-Linux with tutorial 
+    http://nodejs.org/
+    https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-20-04
 
 =======================================================
 
