@@ -14,8 +14,11 @@ Konsole gespielt.
 
 Befehle:
 
-.user = Zeigt alle User
-.time = Zeigt die Spielzeit
+.user             = Zeigt alle User
+.time             = Zeigt die Spielzeit
+.rule             = Zeigt die Übersicht für Punkte
+.sheet [username] = zeigt das Würfelsheet 
+.break            = Übernimmt die Würfel 
 
 =======================================================
 

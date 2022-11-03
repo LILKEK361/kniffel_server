@@ -24,3 +24,5 @@ Small Street: 1,2,3,4,5 | + 30P
 Big Street  : 2,3,4,5,6 | + 40P
 Chance      :           | + Alle Würfel werden zusammengezählt
 
+--------------------------------------------------------------
+
