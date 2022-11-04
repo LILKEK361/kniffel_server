@@ -1,4 +1,7 @@
 # kniffel_bing
+
+=======================================================
+
 Kniffel server von Nick Hillmann, Bennet Jansen, Lionel
 
 =======================================================
@@ -19,6 +22,7 @@ Befehle:
 .rule             = Zeigt die Übersicht für Punkte
 .sheet [username] = zeigt das Würfelsheet 
 .break            = Übernimmt die Würfel x
+.block [catigorie]= blocks a cat
 
 =======================================================
 
