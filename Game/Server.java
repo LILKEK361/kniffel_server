@@ -32,10 +32,10 @@ public class Server {
 				DataInputStream in = new DataInputStream( client.getInputStream());
 				
 				DataOutputStream output = new DataOutputStream(client.getOutputStream());
-				
+				while(true){
 				String order = in.readUTF();
 
-				while(true){
+				
 					switch (order) {
 						case "leave":
 							output.writeUTF("Aufwiedersehen");
