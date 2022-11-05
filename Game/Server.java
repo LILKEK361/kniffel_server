@@ -29,24 +29,27 @@ public class Server {
 				System.out.println("Waiting at:" + server.getLocalPort());
 				Socket client = server.accept();
 				
-				DataInputStream in = new DataInputStream(client.getInputStream());
+				DataInputStream in = new DataInputStream( client.getInputStream());
 				
 				DataOutputStream output = new DataOutputStream(client.getOutputStream());
 				
 				String order = in.readUTF();
 
-				switch (order) {
-					case "leave":
-						output.writeUTF("Aufwiedersehen");
-						client.close();
-								
-					case "Leave":
-						output.writeUTF("Aufwiedersehen");
-						client.close();
-					
-					case ".start":
-						output.writeUTF("Game is starting...");
-				}
+				while(true){
+					switch (order) {
+						case "leave":
+							output.writeUTF("Aufwiedersehen");
+							client.close();
+							break;
+									
+						case "Leave":
+							output.writeUTF("Aufwiedersehen");
+							client.close();
+							break;
+						
+						case ".start":
+							output.writeUTF("Game is starting...");
+					}}
 
 
 				
@@ -67,7 +70,11 @@ public class Server {
 	}
    public static void main(String[] args){
 		Server s = new Server(1227);
-		s.start();
+		while(true){
+
+			
+
+		}
    }
    
 }
