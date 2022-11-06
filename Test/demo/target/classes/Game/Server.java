@@ -49,7 +49,7 @@ class ServerClientThread extends Thread {
   int clientNo;
   int squre;
    
-  Object ob = org.xml.sax.Parser.prase()
+  O
 
 
   
