@@ -2,12 +2,12 @@ package Game;
 
 
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import javax.swing.text.html.HTMLEditorKit.Parser;
+
 import java.io.*;
+
 
 
 
@@ -47,11 +47,12 @@ class ServerClientThread extends Thread {
   Socket serverClient;
   int clientNo;
   int squre;
-  List<String> client_list =new ArrayList<String>(); 
-  Hashtable<String, String> user_dic = new Hashtable<String, String>();
-  
-  user_dic.put(clientNo, serverClient);
+   
+  Object ob = org.xml.sax.Parser.prase()
 
+
+  
+ 
 
   ServerClientThread(Socket inSocket,int counter){
     serverClient = inSocket;
@@ -78,7 +79,7 @@ class ServerClientThread extends Thread {
         outStream.writeUTF(serverMessage);
         outStream.flush();
 
-		client_list.add(clientMessage);
+		
 		break;
 
 
