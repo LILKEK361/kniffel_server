@@ -3,7 +3,9 @@ package Game;
 
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 import java.io.*;
 
 
@@ -24,7 +26,7 @@ public class Server {
 
 				counter ++;
 				Socket serverClient = server.accept(); //Server accept the Client connection
-
+				
 				ServerClientThread sct = new ServerClientThread(serverClient, counter);
 				sct.start();
 
@@ -45,6 +47,9 @@ class ServerClientThread extends Thread {
   int clientNo;
   int squre;
   List<String> client_list =new ArrayList<String>(); 
+  HashMap<Integer, Integer> user_dic = new HashMap<Integer, Integer>();
+  
+  user_dic.put(clientNo, serverClient);
 
 
   ServerClientThread(Socket inSocket,int counter){
@@ -81,31 +86,26 @@ class ServerClientThread extends Thread {
         
 		
 		clientMessage=inStream.readUTF();
+		if(clientMessage.equals(".user") || clientMessage.equals(".users")){
 
-		switch (clientMessage) {
-			case ".users":
-				for (String i : client_list) {
-					outStream.writeUTF(i);
-					outStream.flush();
-				
-					
-				}
-				break;
-		
-			default:
-				break;
-		}
-       
-        
-        
-        outStream.writeUTF(serverMessage);
-        outStream.flush();
-
-		
-		break;
+			for (String i : client_list) {
+				outStream.writeUTF(i);
+				outStream.flush();
+			}
 
 
-      }
+		}else if(clientMessage.equals("leave") || clientMessage.equals(".break")){
+
+
+
+		};
+	
+	
+	
+	
+	
+	
+	}
 
 
 	  System.out.println("Server closed...");
@@ -119,6 +119,7 @@ class ServerClientThread extends Thread {
 
     }catch(Exception ex){
       System.out.println(ex);
+	  
     }finally{
       System.out.println("Client -" + clientNo + " exit!! ");
     }
