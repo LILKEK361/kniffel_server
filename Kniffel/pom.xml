@@ -11,4 +11,5 @@
         <maven.compiler.target>19</maven.compiler.target>
         <exec.mainClass>Kniffel</exec.mainClass>
     </properties>
+    <classpathentry kind="lib" path="lib/json-simple-1.1.1.jar"/>
 </project>
