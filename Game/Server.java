@@ -32,9 +32,11 @@ public class Server {
 				DataInputStream in = new DataInputStream( client.getInputStream());
 				
 				DataOutputStream output = new DataOutputStream(client.getOutputStream());
-				while(true){
+				
 				String order = in.readUTF();
 
+				for (String i : output) {
+					
 				
 					switch (order) {
 						case "leave":
@@ -49,16 +51,7 @@ public class Server {
 						
 						case ".start":
 							output.writeUTF("Game is starting...");
-					}}
-
-
-				
-				
-				
-				
-				
-
-				
+				}}
 
 			}catch(Exception f){
 
@@ -70,11 +63,7 @@ public class Server {
 	}
    public static void main(String[] args){
 		Server s = new Server(1227);
-		while(true){
-
-			
-
-		}
+		s.start();
    }
    
 }
