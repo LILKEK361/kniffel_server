@@ -1,4 +1,4 @@
-package "" ;
+
 
 /**
  * Client
@@ -38,11 +38,7 @@ public class Client {
        serverMessage=inStream.readUTF();
        
        System.out.println(serverMessage);
-       if (clientMessage != "") {
-
-         break;
-         
-       }
+       break;
      }
 
      while(!clientMessage.equals(".break")){
@@ -61,11 +57,7 @@ public class Client {
       serverMessage=inStream.readUTF();
       
       System.out.println(serverMessage);
-      if (clientMessage != "" ) {
-         System.out.println("break");
-        break;
-        
-      }
+      
     }
 
     

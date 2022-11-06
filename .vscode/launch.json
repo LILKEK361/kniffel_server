@@ -4,7 +4,6 @@
     // Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
             "type": "java",
             "name": "Launch Current File",
@@ -13,16 +12,16 @@
         },
         {
             "type": "java",
-            "name": "Launch Client",
+            "name": "Launch App",
             "request": "launch",
-            "mainClass": "Game.Client",
+            "mainClass": "App",
             "projectName": "kniffel_server_fb3b8021"
         },
         {
             "type": "java",
-            "name": "Launch Server",
+            "name": "Launch Client",
             "request": "launch",
-            "mainClass": "Game.Server",
+            "mainClass": "Client",
             "projectName": "kniffel_server_fb3b8021"
         }
     ]

@@ -1,3 +1,6 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "Kniffel_binf/lib/json-simple-1.1.1.jar"
+    ]
 }
