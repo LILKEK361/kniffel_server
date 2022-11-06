@@ -4,6 +4,7 @@ package Game;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.io.*;
@@ -47,7 +48,7 @@ class ServerClientThread extends Thread {
   int clientNo;
   int squre;
   List<String> client_list =new ArrayList<String>(); 
-  HashMap<Integer, Integer> user_dic = new HashMap<Integer, Integer>();
+  Hashtable<String, String> user_dic = new Hashtable<String, String>();
   
   user_dic.put(clientNo, serverClient);
 
