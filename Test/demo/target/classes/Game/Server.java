@@ -49,8 +49,8 @@ class ServerClientThread extends Thread {
   int clientNo;
   int squre;
    
-  O
-
+	
+  
 
   
  
