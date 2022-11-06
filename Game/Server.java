@@ -2,68 +2,132 @@ package Game;
 
 
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.*;
 
 
 
 public class Server {
 
-	private ServerSocket server;
-	public Server(int port) {
+
+	
+   public static void main(String[] args) throws Exception {
 		try {
-			server = new ServerSocket(port);
-			server.setSoTimeout(1000000);
-		} catch (SocketException e) {
-			
-			e.printStackTrace();
-		}catch (IOException d) {
-			d.printStackTrace();
+			//Server socket + client counter
+			ServerSocket server = new ServerSocket(3589);
+			int counter = 0;
+
+			System.out.println("Server starting...");
+
+			while (true) {
+
+				counter ++;
+				Socket serverClient = server.accept(); //Server accept the Client connection
+
+				ServerClientThread sct = new ServerClientThread(serverClient, counter);
+				sct.start();
+
+				
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e);
 		}
-		
-	}
-
-	public void start(){
-
-		while(true){
-			try{
-				System.out.println("Waiting at:" + server.getLocalPort());
-				Socket client = server.accept();
-				
-				DataInputStream in = new DataInputStream( client.getInputStream());
-				
-				DataOutputStream output = new DataOutputStream(client.getOutputStream());
-				
-				String order = in.readUTF();
-
-				for (String i : output) {
-					
-				
-					switch (order) {
-						case "leave":
-							output.writeUTF("Aufwiedersehen");
-							client.close();
-							break;
-									
-						case "Leave":
-							output.writeUTF("Aufwiedersehen");
-							client.close();
-							break;
-						
-						case ".start":
-							output.writeUTF("Game is starting...");
-				}}
-
-			}catch(Exception f){
-
-				f.printStackTrace();
-				break;
-
-			}}
-
-	}
-   public static void main(String[] args){
-		Server s = new Server(1227);
-		s.start();
    }
    
 }
+
+
+class ServerClientThread extends Thread {
+  Socket serverClient;
+  int clientNo;
+  int squre;
+  List<String> client_list =new ArrayList<String>(); 
+
+
+  ServerClientThread(Socket inSocket,int counter){
+    serverClient = inSocket;
+    clientNo=counter;
+  }
+  public void run(){
+    try{
+      
+		//Nimmt die Daten auf die zum und vom Server geschickt werdem	
+	  DataInputStream inStream = new DataInputStream(serverClient.getInputStream());
+      DataOutputStream outStream = new DataOutputStream(serverClient.getOutputStream());
+      
+	  String clientMessage="", serverMessage="";
+      
+	  while(!clientMessage.equals(".break")){
+        
+		
+		clientMessage=inStream.readUTF();
+
+
+        System.out.println(clientMessage + " has joind!");
+        
+        serverMessage="Guten Tag: " + clientMessage;
+        outStream.writeUTF(serverMessage);
+        outStream.flush();
+
+		client_list.add(clientMessage);
+		break;
+
+
+      }
+	  while(!clientMessage.equals(".break")){
+        
+		
+		clientMessage=inStream.readUTF();
+
+		switch (clientMessage) {
+			case ".users":
+				for (String i : client_list) {
+					outStream.writeUTF(i);
+					outStream.flush();
+				
+					
+				}
+				break;
+		
+			default:
+				break;
+		}
+       
+        
+        
+        outStream.writeUTF(serverMessage);
+        outStream.flush();
+
+		
+		break;
+
+
+      }
+
+
+	  System.out.println("Server closed...");
+	  outStream.writeUTF("Server closed...");
+      outStream.flush();
+      
+	 
+	  inStream.close();
+      outStream.close();
+      serverClient.close();
+
+    }catch(Exception ex){
+      System.out.println(ex);
+    }finally{
+      System.out.println("Client -" + clientNo + " exit!! ");
+    }
+  }
+  public void clients(){
+
+
+
+  }
+
+}
+
