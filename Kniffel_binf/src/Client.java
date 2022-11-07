@@ -18,6 +18,7 @@ public class Client {
      DataInputStream inStream=new DataInputStream(socket.getInputStream());
      DataOutputStream outStream=new DataOutputStream(socket.getOutputStream());
      BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+     ObjectInputStream oInputStream = new ObjectInputStream(socket.getInputStream());
      
      String clientMessage="",serverMessage="";
      
@@ -42,21 +43,18 @@ public class Client {
      }
 
      while(!clientMessage.equals(".break")){
-       
-      
-      System.out.println("Please wait for the Admin to start the Game");
-      
-      //Nimmt einen String aus der Console und packt in in eine Var
-      clientMessage=br.readLine();
-      
-      //Nimmt die Var und schickt diese an den Server
-      outStream.writeUTF(clientMessage);
-      outStream.flush();
+     
+        if(!inStream.equals(String)){
 
-      //Hier nimmt das Programm die Antwort vom Server und packt diese in eine Var 
-      serverMessage=inStream.readUTF();
-      
-      System.out.println(serverMessage);
+          System.out.println(inStream);
+          Thread.sleep(100);
+
+        }else if(!oInputStream.equals("")){
+
+          System.out.println(oInputStream);
+          Thread.sleep(100);
+
+        }
       
     }
 

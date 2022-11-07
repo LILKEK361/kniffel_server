@@ -1,9 +1,8 @@
 import java.net.*;
-import java.nio.file.Paths;
+
 import java.util.*;
 import java.io.*;
-import java.lang.reflect.Array;
-import org.json.simple.JSONObject;
+
 
 
 public class App {
@@ -57,12 +56,15 @@ class ServerClientThread extends Thread  {
  
   public void run(){
     try{
-      Hashtable<String, String> client_list = new Hashtable<String, String>();
+      Hashtable<Integer, String> client_list = new Hashtable<Integer, String>();
 
-      client_list.put(Integer.toString(clientNo), serverClient.toString());
+      
+      
+      
       //Nimmt die Daten auf die zum und vom Server geschickt werdem	
        DataInputStream inStream = new DataInputStream(serverClient.getInputStream());
        DataOutputStream outStream = new DataOutputStream(serverClient.getOutputStream());
+       ObjectOutputStream oStream = new ObjectOutputStream(serverClient.getOutputStream());
        
        String clientMessage="", serverMessage="";
        
@@ -77,8 +79,8 @@ class ServerClientThread extends Thread  {
          serverMessage="Guten Tag: " + clientMessage;
          outStream.writeUTF(serverMessage);
          outStream.flush();
- 
-         
+         client_list.put(clientNo, clientMessage);
+         System.out.println(client_list);
          break;
  
  
@@ -87,21 +89,16 @@ class ServerClientThread extends Thread  {
          
          
          clientMessage=inStream.readUTF();
+         
          if(clientMessage.equals(".user") || clientMessage.equals(".users")){
             outStream.writeUTF("Userlist:");
-            Set<String> keys = client_list.keySet();
-            
-            for (Integer i : keys) {
-                
-                outStream.write(i);
-                outStream.writeUTF(client_list.get(i).toString());
-                outStream.flush();
-            }
+            Set<Integer> keys = client_list.keySet();
+            oStream.writeObject(client_list);
  
  
          }else if(clientMessage.equals("leave") || clientMessage.equals(".break")){
           
-          
+          break;
  
  
          };
@@ -122,12 +119,14 @@ class ServerClientThread extends Thread  {
        inStream.close();
        outStream.close();
        serverClient.close();
+       
  
      }catch(Exception ex){
        System.out.println(ex);
        
      }finally{
        System.out.println("Client -" + clientNo + " exit!! ");
+       
      }
    
  
