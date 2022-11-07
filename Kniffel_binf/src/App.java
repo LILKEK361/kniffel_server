@@ -2,134 +2,45 @@ import java.net.*;
 
 import java.util.*;
 import java.io.*;
-
+import java.net.*;
 
 
 public class App {
+  private ServerSocket serverSocket;
+  private Socket clientSocket;
+  private PrintWriter out;
+  private BufferedReader in;
 
-   
+  public void start(int port) throws IOException {
+      serverSocket = new ServerSocket(port);
+      clientSocket = serverSocket.accept();
       
-    
-
-	
-    public static void main(String[] args) throws Exception {
-         try {
-             //Server socket + client counter
-             ServerSocket server = new ServerSocket(3589);
-             int counter = 0;
- 
-             System.out.println("Server starting...");
- 
-             while (true) {
- 
-                 counter ++;
-                 Socket serverClient = server.accept(); //Server accept the Client connection
-                 
-                 ServerClientThread sct = new ServerClientThread(serverClient, counter);
-                 sct.start();
- 
-                 
-             }
- 
-         } catch (Exception e) {
-             // TODO: handle exception
-             System.out.println(e);
-         }
-    }
-    
-}
- 
- 
-class ServerClientThread extends Thread  {
-  Socket serverClient;
-  int clientNo;
-  int squre;
-
-  
-
- 
-
-  ServerClientThread(Socket inSocket,int counter){
-  serverClient = inSocket;
-  clientNo=counter;
+      out = new PrintWriter(clientSocket.getOutputStream(), true);
+      in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+      
+      String greeting = in.readLine();
+          if ("hello server".equals(greeting)) {
+              out.println("hello client");
+          }
+          else {
+              out.println("unrecognised greeting");
+          }
   }
- 
-  public void run(){
-    try{
-      Hashtable<Integer, String> client_list = new Hashtable<Integer, String>();
 
+  public void stop() throws IOException {
+      in.close();
+      out.close();
+      clientSocket.close();
+      serverSocket.close();
+  }
+  public static void main(String[] args) {
+      try {
+        App server=new App();
+        server.start(6666);
+    
+      } catch ( IOException e) {
+        // TODO: handle exception
+      }
+    }
       
-      
-      
-      //Nimmt die Daten auf die zum und vom Server geschickt werdem	
-       DataInputStream inStream = new DataInputStream(serverClient.getInputStream());
-       DataOutputStream outStream = new DataOutputStream(serverClient.getOutputStream());
-       ObjectOutputStream oStream = new ObjectOutputStream(serverClient.getOutputStream());
-       
-       String clientMessage="", serverMessage="";
-       
-       while(!clientMessage.equals(".break")){
-         
-         
-         clientMessage=inStream.readUTF();
- 
- 
-         System.out.println(clientMessage + " has joind!");
-         
-         serverMessage="Guten Tag: " + clientMessage;
-         outStream.writeUTF(serverMessage);
-         outStream.flush();
-         client_list.put(clientNo, clientMessage);
-         System.out.println(client_list);
-         break;
- 
- 
-       }
-       while(!clientMessage.equals(".break")){
-         
-         
-         clientMessage=inStream.readUTF();
-         
-         if(clientMessage.equals(".user") || clientMessage.equals(".users")){
-            outStream.writeUTF("Userlist:");
-            Set<Integer> keys = client_list.keySet();
-            oStream.writeObject(client_list);
- 
- 
-         }else if(clientMessage.equals("leave") || clientMessage.equals(".break")){
-          
-          break;
- 
- 
-         };
-     
-     
-     
-     
-     
-     
-     }
- 
- 
-       System.out.println("Server closed...");
-       outStream.writeUTF("Server closed...");
-       outStream.flush();
-       
-      
-       inStream.close();
-       outStream.close();
-       serverClient.close();
-       
- 
-     }catch(Exception ex){
-       System.out.println(ex);
-       
-     }finally{
-       System.out.println("Client -" + clientNo + " exit!! ");
-       
-     }
-   
- 
-}}
- 
- 
+}

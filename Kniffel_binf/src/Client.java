@@ -11,66 +11,35 @@ import java.util.*;
 
 
 public class Client {
-   public static void main(String[] args) throws Exception {
-   try{
-     Socket socket=new Socket("localhost",3589);
-     
-     DataInputStream inStream=new DataInputStream(socket.getInputStream());
-     DataOutputStream outStream=new DataOutputStream(socket.getOutputStream());
-     BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-     ObjectInputStream oInputStream = new ObjectInputStream(socket.getInputStream());
-     
-     String clientMessage="",serverMessage="";
-     
-     //Anmeldung
-     while(!clientMessage.equals(".break")){
-       
-      
-       System.out.println("Enter your Name :");
-       
-       //Nimmt einen String aus der Console und packt in in eine Var
-       clientMessage=br.readLine();
-       
-       //Nimmt die Var und schickt diese an den Server
-       outStream.writeUTF(clientMessage);
-       outStream.flush();
+  private Socket clientSocket;
+  private PrintWriter out;
+  private BufferedReader in;
 
-       //Hier nimmt das Programm die Antwort vom Server und packt diese in eine Var 
-       serverMessage=inStream.readUTF();
-       
-       System.out.println(serverMessage);
-       break;
-     }
+  public void startConnection (int port) throws IOException {
+      clientSocket = new Socket("localhost", port);
+      out = new PrintWriter(clientSocket.getOutputStream(), true);
+      in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+  }
 
-     while(!clientMessage.equals(".break")){
-     
-        if(!inStream.equals(String)){
+  public String sendMessage(String msg) throws IOException {
+      out.println(msg);
+      String resp = in.readLine();
+      return resp;
+  }
 
-          System.out.println(inStream);
-          Thread.sleep(100);
+  public void stopConnection()throws IOException {
+      in.close();
+      out.close();
+      clientSocket.close();
+  }
+  public static void main(String[] args) {
+    try {
+      int port = 6666;
+      System.out.println("Starting connection....");
+      startConnection(port);
 
-        }else if(!oInputStream.equals("")){
-
-          System.out.println(oInputStream);
-          Thread.sleep(100);
-
-        }
-      
+    } catch (Exception e) {
+      // TODO: handle exception
     }
-
-    
-     
-     
-     outStream.close();
-     
-     outStream.close();
-    
-     socket.close();
-   
-   }catch(Exception e){
-     
-      System.out.println(e);
-   
-   }
-   }
- }
+  }
+}
