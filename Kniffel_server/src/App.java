@@ -1,15 +1,14 @@
 import java.io.*;
-import java.lang.*;
+
 import java.net.*;
-import java.text.*;
-import java.util.Date;
 
 
 
 
-public class App implements random_data {
+
+public class App  {
     
-    
+    public static int counter = 0;
     
     public static void main(String[] args) throws IOException 
 	{
@@ -24,8 +23,9 @@ public class App implements random_data {
 			try
 			{
 				// mynewSocket object to receive incoming client requests
+				if(counter < 5){
 				mynewSocket = myserverSocket.accept();
-                
+				counter ++;
 				
 				System.out.println("A new connection identified : " + mynewSocket);
                 // obtaining input and out streams
@@ -34,10 +34,17 @@ public class App implements random_data {
 				
 				System.out.println("Thread assigned");
 
-				Thread myThread = new ClientHandler(mynewSocket, ournewDataInputstream, ournewDataOutputstream);
+				Thread myThread = new ClientHandler(mynewSocket, ournewDataInputstream, ournewDataOutputstream,counter);
 				// starting
 				myThread.start();
-				
+				}else{
+
+					mynewSocket = myserverSocket.accept();
+					DataOutputStream ournewDataOutputstream = new DataOutputStream(mynewSocket.getOutputStream());
+					ournewDataOutputstream.writeUTF("5/5");
+					mynewSocket.close();
+
+				}
 			}
 			catch (Exception e){
 				mynewSocket.close();
@@ -51,29 +58,38 @@ public class App implements random_data {
 class ClientHandler extends Thread 
 {
 	
+
+	public int maxclients = 5;
 	final DataInputStream ournewDataInputstream;
 	final DataOutputStream ournewDataOutputstream;
 	final Socket mynewSocket;
-	public  int clientscount = 0;// Hr.Pieper fragen
-    public int maxclients = 5;// Hr.Pieper fragen
+	public int counter;
+
 
 	// Constructor
-	public ClientHandler(Socket mynewSocket, DataInputStream ournewDataInputstream, DataOutputStream ournewDataOutputstream)
+	public ClientHandler(Socket mynewSocket, DataInputStream ournewDataInputstream, DataOutputStream ournewDataOutputstream, int counter)
 	{
 		this.mynewSocket = mynewSocket;
 		this.ournewDataInputstream = ournewDataInputstream;
 		this.ournewDataOutputstream = ournewDataOutputstream;
-        clientscount++;
+		this.counter = counter;
+		
+        
 	}
 
 	@Override
 	public void run()
-	{
+	{	
+	
 		String receivedString;
-		String stringToReturn;
+		String stringToReturn = "";
 		while (true)
 		{
 			try {
+
+
+				 
+				ournewDataOutputstream.writeUTF("Hello: your are Client: %s ".formatted(counter));
 				ournewDataOutputstream.writeUTF("Choose: [Game | commands | user]..\n"+
 							"Or Exit");
 				
@@ -93,12 +109,14 @@ class ClientHandler extends Thread
                     
                 }else if(receivedString.equals("user"))
                 {
-                    ournewDataOutputstream.writeUTF("Du bist alleine" );
+					String user = String.format(" %s / %d", counter, maxclients);
+                    ournewDataOutputstream.writeUTF(user);
                     
                 }
                 
 			} catch (IOException e) {
 				e.printStackTrace();
+				counter = counter -1;
 			}
 		}
 		
@@ -107,9 +125,11 @@ class ClientHandler extends Thread
 			// closing resources
 			this.ournewDataInputstream.close();
 			this.ournewDataOutputstream.close();
+			counter = counter -1;
 			
 		}catch(IOException e){
 			e.printStackTrace();
+			counter = counter -1;
 		}
 	}
 }
