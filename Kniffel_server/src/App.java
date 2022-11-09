@@ -23,7 +23,8 @@ public class App  {
 			try
 			{
 				// mynewSocket object to receive incoming client requests
-				if(counter < 5){
+				if(counter < 5)
+				{
 				mynewSocket = myserverSocket.accept();
 				counter ++;
 				
@@ -36,7 +37,11 @@ public class App  {
 
 				Thread myThread = new ClientHandler(mynewSocket, ournewDataInputstream, ournewDataOutputstream,counter);
 				// starting
-				myThread.start();
+				
+					if(counter == 5)
+					{
+					myThread.start();
+					}
 				}else{
 
 					mynewSocket = myserverSocket.accept();
