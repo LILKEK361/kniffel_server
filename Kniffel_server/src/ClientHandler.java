@@ -5,16 +5,15 @@
  */
 
 
-import gamedb.GameDB;
-import gamedb.GameDBToMuchPlayersException;
-import gamedb.GameDBUnknownUserException;
-import gamedb.GameDBUnsupportedCharacters;
-import gamedb.GameDBUserExistsException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+
+import Game.kniffel;
+import gamedb.*;
 
 /**
  * Class to handle client connections
@@ -23,6 +22,7 @@ import java.net.Socket;
  */
 public class ClientHandler implements Runnable {
 
+    private static final ArrayList<DataConnectedUser> DataConnectedUser = null;
     private boolean shutdown = false;
     private final Socket cSocket;
     private final GameDB gameDB;
@@ -80,7 +80,8 @@ public class ClientHandler implements Runnable {
                             shutdown = true;
                             break;
                         case "start":
-                            game();
+                           
+                            kniffel.run();
                             break;
                         default:
                             outBuf.println("error: unknown command " + parsedData[0]);

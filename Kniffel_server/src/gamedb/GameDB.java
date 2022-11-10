@@ -29,7 +29,7 @@ public class GameDB {
     /**
      * list of connected user
      */
-    private final ArrayList<DataConnectedUser> connectedUserList;
+    public final ArrayList<DataConnectedUser> connectedUserList;
 
     /**
      * maximal number od players
