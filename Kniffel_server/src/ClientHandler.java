@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.*;
 
 import Game.kniffel;
 import gamedb.*;
@@ -80,8 +80,7 @@ public class ClientHandler implements Runnable {
                             shutdown = true;
                             break;
                         case "start":
-                           
-                            kniffel.run();
+                            game();
                             break;
                         default:
                             outBuf.println("error: unknown command " + parsedData[0]);
@@ -202,6 +201,71 @@ public class ClientHandler implements Runnable {
         {
             outBuf.println("error: user not exists");
         }
+    }
+
+    public void game()
+    {
+        String im = "========================================";
+        outBuf.println("Current player: ");
+        for (int i = 0; i < gameDB.getNumberOfConnectedUsers(); i++)
+        {
+
+            outBuf.println(gameDB.getConnectedUserNichname(i));
+
+
+        }
+        
+        
+
+        for(int i = 0; i < gameDB.getNumberOfConnectedUsers(); i++) 
+        {
+
+            lines(im);
+            outBuf.println("Throw || Player: " + gameDB.getConnectedUserNichname(i));
+            lines(im);
+
+            int würfel1 = (int)(Math.random() * 5 + 1);
+            int würfel2 = (int)(Math.random() * 5 + 1);
+            int würfel3 = (int)(Math.random() * 5 + 1);
+            int würfel4 = (int)(Math.random() * 5 + 1);
+            int würfel5 = (int)(Math.random() * 5 + 1);
+
+            ArrayList<Integer> wurf = new ArrayList<Integer>();
+
+            wurf.add(würfel1);
+            wurf.add(würfel2);
+            wurf.add(würfel3);
+            wurf.add(würfel4);
+            wurf.add(würfel5);
+            
+            for(int j = 0; j < wurf.size(); j++)
+            {
+                outBuf.println((Integer)wurf.get(j));
+
+
+            };
+            
+
+
+
+        }
+        
+        
+
+
+    }
+    
+    public void lines(String line)
+    {
+
+        for(int i = 0; i < line.length(); i++)
+        {
+
+            outBuf.print("=");
+
+        }
+        outBuf.println("");
+
     }
     
 }
