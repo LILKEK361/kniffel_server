@@ -40,6 +40,7 @@ public class App  {
 				
 					if(counter == 5)
 					{
+					ournewDataOutputstream.writeUTF("5/5");
 					myThread.start();
 					}
 				}else{
@@ -92,9 +93,9 @@ class ClientHandler extends Thread
 		{
 			try {
 
-
+				String user_msg = "You are client: "+ String.format(String.valueOf(counter));
 				 
-				ournewDataOutputstream.writeUTF("Hello: your are Client: %s ".formatted(counter));
+				ournewDataOutputstream.writeUTF(user_msg);
 				ournewDataOutputstream.writeUTF("Choose: [Game | commands | user]..\n"+
 							"Or Exit");
 				
