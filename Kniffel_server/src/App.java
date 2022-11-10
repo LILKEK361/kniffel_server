@@ -37,7 +37,11 @@ public class App  {
 
 				Thread myThread = new ClientHandler(mynewSocket, ournewDataInputstream, ournewDataOutputstream,counter);
 				// starting
-				myThread.start();
+				
+					if(counter == 5)
+					{
+					myThread.start();
+					}
 				}else{
 
 					mynewSocket = myserverSocket.accept();
