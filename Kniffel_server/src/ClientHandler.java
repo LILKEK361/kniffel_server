@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kniffelserver;
+
 
 import gamedb.GameDB;
 import gamedb.GameDBToMuchPlayersException;
@@ -40,7 +40,7 @@ public class ClientHandler implements Runnable {
             BufferedReader inBuf = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
             outBuf = new PrintWriter(this.cSocket.getOutputStream(), true);
 
-            outBuf.println("**** Welcome at kniffel server ****");
+            outBuf.println("==== Welcome at kniffel server ====");
             
             try {
                 gameDB.addConnectedUser(cSocket);
@@ -66,6 +66,9 @@ public class ClientHandler implements Runnable {
                         case "users":
                             handleCmdUsers();
                             break;
+                        case "user" : 
+                            handleCmdUsers();
+                            break;
                         case "identify":
                             handleCmdIdentify();
                             break;
@@ -75,6 +78,9 @@ public class ClientHandler implements Runnable {
                         case "exit":
                             handleCmdExit();
                             shutdown = true;
+                            break;
+                        case "start":
+                            game();
                             break;
                         default:
                             outBuf.println("error: unknown command " + parsedData[0]);
@@ -185,12 +191,16 @@ public class ClientHandler implements Runnable {
     /**
      * method to handle identity command
      */
-    private void handleCmdIdentify() {
-        try {
+    private void handleCmdIdentify() 
+    {
+        try 
+        {
             outBuf.println("server: identify");
             outBuf.println(gameDB.getConnectedUserNichname(cSocket));
-        } catch (GameDBUnknownUserException ex) {
+        } catch (GameDBUnknownUserException ex) 
+        {
             outBuf.println("error: user not exists");
         }
     }
+    
 }

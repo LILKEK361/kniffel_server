@@ -1,4 +1,3 @@
-package kniffelserver;
 
 import gamedb.GameDB;
 import java.io.IOException;
@@ -10,7 +9,7 @@ public class KniffelServer {
     /**
      * port number for TCP server communication
      */
-    private static final int PORT_NUMBER = 38233;
+    private static final int PORT_NUMBER = 27222;
 
     /**
      * maximal number of players
