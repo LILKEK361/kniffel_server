@@ -9,8 +9,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.*;
+
+import javax.swing.text.html.HTMLDocument.HTMLReader.ParagraphAction;
 
 import Game.kniffel;
 import gamedb.*;
@@ -80,7 +83,7 @@ public class ClientHandler implements Runnable {
                             shutdown = true;
                             break;
                         case "start":
-                            game();
+                            game(inBuf);
                             break;
                         default:
                             outBuf.println("error: unknown command " + parsedData[0]);
@@ -203,53 +206,127 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void game()
-    {
-        String im = "========================================";
-        outBuf.println("Current player: ");
-        for (int i = 0; i < gameDB.getNumberOfConnectedUsers(); i++)
-        {
+    public void game(BufferedReader inBuf)
+    {   
 
-            outBuf.println(gameDB.getConnectedUserNichname(i));
-
-
-        }
+        HashMap<Integer, Integer> rolled_dices = new HashMap<Integer,Integer>(); 
         
-        
-
-        for(int i = 0; i < gameDB.getNumberOfConnectedUsers(); i++) 
-        {
-
-            lines(im);
-            outBuf.println("Throw || Player: " + gameDB.getConnectedUserNichname(i));
-            lines(im);
-
-            int würfel1 = (int)(Math.random() * 5 + 1);
-            int würfel2 = (int)(Math.random() * 5 + 1);
-            int würfel3 = (int)(Math.random() * 5 + 1);
-            int würfel4 = (int)(Math.random() * 5 + 1);
-            int würfel5 = (int)(Math.random() * 5 + 1);
-
-            ArrayList<Integer> wurf = new ArrayList<Integer>();
-
-            wurf.add(würfel1);
-            wurf.add(würfel2);
-            wurf.add(würfel3);
-            wurf.add(würfel4);
-            wurf.add(würfel5);
+        try {
             
-            for(int j = 0; j < wurf.size(); j++)
+        
+            String im = "========================================";
+            outBuf.println("Current player: ");
+            for (int i = 0; i < gameDB.getNumberOfConnectedUsers(); i++)
             {
-                outBuf.println((Integer)wurf.get(j));
+
+                outBuf.println(gameDB.getConnectedUserNichname(i));
 
 
-            };
+            }
+            
             
 
+            for(int i = 0; i < gameDB.getNumberOfConnectedUsers(); i++) 
+            {
+
+                lines(im);
+                outBuf.println("Throw || Player: " + gameDB.getConnectedUserNichname(i));
+                lines(im);
+
+                HashMap<Integer, Integer> wurf = new HashMap<Integer, Integer>();
+
+                
+
+                for(int e = 0; e < 5; e++){
+
+                    int roll = (int)(Math.random() * 5 + 1);
+                    wurf.put(e, roll);
+
+                }
+                
+                for(int j = 0; j < wurf.size(); j++)
+                {
+                    outBuf.println((Integer)wurf.get(j));
 
 
+                };
+                
+                lines(im);
+                
+                outBuf.println("Which dice should be rerolled:");
+                
+                for(int d = 1; d < 6; d++)
+                {
+
+                    outBuf.println("[%s]".formatted(d));
+
+                }
+                
+                lines(im);
+                
+                
+
+                String wurf_w;
+                int new_roll;
+                boolean right = false;
+                
+                while (( wurf_w = inBuf.readLine()) != null && right == false)
+                {
+                    
+                    wurf_w = String.valueOf(wurf_w);
+                    
+                    HashMap<Integer, Integer> reroll = new HashMap<Integer, Integer>();
+                    for(int k = 0; k < reroll.size(); k++)
+                    {
+
+                        reroll.put(k, wurf_w.indexOf(k));
+
+                    }
+                    lines(im);
+                    
+                    outBuf.println("Reroll:");
+                    
+                    
+
+                    for(int v = 0; v < reroll.size() ; v++)
+                    {
+                        if(reroll.get(v) > 1  && reroll.get(v) < 7)
+                        {
+                            int old_roll = reroll.get(v);
+                            new_roll = (int)(Math.random() * 5 + 1);
+
+                            outBuf.println("Roll [%s] was rerolled to %d".formatted(old_roll, new_roll));
+
+                            wurf.put(v, new_roll);
+                            
+                        }
+
+
+                    }
+
+                    for(int o = 0; o < wurf.size(); o++)
+                    {
+                        outBuf.println(wurf.get(o));
+
+                    }
+
+                   
+                        
+
+                    
+                    
+
+                };
+
+                lines(im);
+
+            }
+        } catch (Exception e) 
+        {
+                // TODO: handle exception
+                outBuf.println("Errord during rolling: " + e.getMessage());
         }
-        
+            
         
 
 
