@@ -5,6 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "java",
+      "name": "Launch KniffelServer",
+      "request": "launch",
+      "mainClass": "KniffelServer",
+      "projectName": "kniffel_bing_beb85254"
+    },
+    {
       "name": "Python: Aktuelle Datei",
       "type": "python",
       "request": "launch",

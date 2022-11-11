@@ -13,9 +13,9 @@ import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.*;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.ParagraphAction;
 
-import Game.kniffel;
+
+
 import gamedb.*;
 
 /**
@@ -257,8 +257,9 @@ public class ClientHandler implements Runnable {
                 
                 for(int m = 1; m < 6; m++)
                 {
-
-                    outBuf.println("[%s]".formatted(m));
+                    
+                    String show = String.format("[%d]",im);
+                    outBuf.println(show);
 
                 }
                 
@@ -272,7 +273,12 @@ public class ClientHandler implements Runnable {
                 
                 while (( wurf_w = inBuf.readLine()) != null && right == false)
                 {
-                    
+                    if(wurf_w == "exit")
+                    {
+
+                        cSocket.close();
+
+                    }
                     wurf_w = String.valueOf(wurf_w);
                     
                     HashMap<Integer, Integer> reroll = new HashMap<Integer, Integer>();
@@ -286,8 +292,7 @@ public class ClientHandler implements Runnable {
                     
                     outBuf.println("Reroll:");
                     
-                    
-
+                    /*
                     for(int v = 0; v < reroll.size() ; v++)
                     {
                         if(reroll.get(v) > 1  && reroll.get(v) < 7)
@@ -310,7 +315,8 @@ public class ClientHandler implements Runnable {
 
                     }
 
-                   
+                    */
+
                         
 
                     
