@@ -210,6 +210,8 @@ public class ClientHandler implements Runnable {
     {   
 
         HashMap<Integer, Integer> rolled_dices = new HashMap<Integer,Integer>(); 
+        HashMap<Integer, Integer> wurf = new HashMap<Integer, Integer>();
+
         
         try {
             
@@ -233,8 +235,7 @@ public class ClientHandler implements Runnable {
                 outBuf.println("Throw || Player: " + gameDB.getConnectedUserNichname(i));
                 lines(im);
 
-                HashMap<Integer, Integer> wurf = new HashMap<Integer, Integer>();
-
+                
                 
 
                 for(int e = 0; e < 5; e++){
@@ -278,6 +279,7 @@ public class ClientHandler implements Runnable {
                         cSocket.close();
 
                     }
+
                     wurf_w = String.valueOf(wurf_w);
                     if(wurf_w == "skip")
                     {
@@ -287,7 +289,7 @@ public class ClientHandler implements Runnable {
                     }
                     
                     HashMap<Integer, Integer> reroll = new HashMap<Integer, Integer>();
-                    
+                 
                     lines(im);
                     
                     for(int a = 0; a < wurf_w.length(); a ++ )
@@ -296,9 +298,13 @@ public class ClientHandler implements Runnable {
                        int würfel = Integer.parseInt(String.valueOf(wurf_w.charAt(a)));
                        if(würfel > 0 && würfel < 6)
                        {
+                        // Minus one because array starts with 0;
                         new_roll = (int)(Math.random()*5+1);
-                        wurf.put(würfel, new_roll);
                         outBuf.println("Dice " + würfel + " was rerolled to: " + new_roll);
+                        würfel -= 1;
+                        
+                        wurf.put(würfel, new_roll);
+                        
                         right = true;
                        }else
                        {
@@ -323,6 +329,8 @@ public class ClientHandler implements Runnable {
                     }
 
                     lines(im);
+
+                    break;
 
                     
 
