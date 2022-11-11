@@ -258,9 +258,8 @@ public class ClientHandler implements Runnable {
                 for(int m = 1; m < 6; m++)
                 {
                     
-                    String show = String.format("[%d]",im);
-                    outBuf.println(show);
-
+                   
+                    outBuf.println("[" + m + "]");
                 }
                 
                 lines(im);
@@ -280,47 +279,53 @@ public class ClientHandler implements Runnable {
 
                     }
                     wurf_w = String.valueOf(wurf_w);
+                    if(wurf_w == "skip")
+                    {
+
+                        break;
+
+                    }
                     
                     HashMap<Integer, Integer> reroll = new HashMap<Integer, Integer>();
-                    for(int k = 0; k < reroll.size(); k++)
-                    {
-
-                        reroll.put(k, wurf_w.indexOf(k));
-
-                    }
+                    
                     lines(im);
                     
-                    outBuf.println("Reroll:");
-                    
-                    /*
-                    for(int v = 0; v < reroll.size() ; v++)
+                    for(int a = 0; a < wurf_w.length(); a ++ )
                     {
-                        if(reroll.get(v) > 1  && reroll.get(v) < 7)
-                        {
-                            int old_roll = reroll.get(v);
-                            new_roll = (int)(Math.random() * 5 + 1);
 
-                            outBuf.println("Roll [%s] was rerolled to %d".formatted(old_roll, new_roll));
+                       int würfel = Integer.parseInt(String.valueOf(wurf_w.charAt(a)));
+                       if(würfel > 0 && würfel < 6)
+                       {
+                        new_roll = (int)(Math.random()*5+1);
+                        wurf.put(würfel, new_roll);
+                        outBuf.println("Dice " + würfel + " was rerolled to: " + new_roll);
+                        right = true;
+                       }else
+                       {
 
-                            wurf.put(v, new_roll);
-                            
-                        }
+                        outBuf.println("Diesen Würfel gibt es nicht: " + würfel);
 
-
-                    }
-
-                    for(int o = 0; o < wurf.size(); o++)
-                    {
-                        outBuf.println(wurf.get(o));
-
-                    }
-
-                    */
-
+                       }
                         
 
+                    } 
+
+                    lines(im);
+                    
+                    outBuf.println("Current dices: ");
                     
                     
+                    for(int a = 0; a < wurf.size();   a++ )
+                    {
+
+                        outBuf.println(wurf.get(a));
+
+                    }
+
+                    lines(im);
+
+                    
+
 
                 };
 
