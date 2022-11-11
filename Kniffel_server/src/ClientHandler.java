@@ -30,6 +30,8 @@ public class ClientHandler implements Runnable {
     private final Socket cSocket;
     private final GameDB gameDB;
     private PrintWriter outBuf = null;
+    public boolean success = false;
+    
 
     ClientHandler(Socket cSocket, GameDB gameDB) {
         this.cSocket = cSocket;
@@ -83,7 +85,13 @@ public class ClientHandler implements Runnable {
                             shutdown = true;
                             break;
                         case "start":
-                            game(inBuf);
+                            try 
+                            {
+                                game(inBuf);
+                        
+                            } catch (Exception e) {
+                                // TODO: handle exception
+                            }
                             break;
                         default:
                             outBuf.println("error: unknown command " + parsedData[0]);
@@ -206,12 +214,12 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void game(BufferedReader inBuf)
+    public void game(BufferedReader inBuf_game) throws Exception
     {   
 
         HashMap<Integer, Integer> rolled_dices = new HashMap<Integer,Integer>(); 
         HashMap<Integer, Integer> wurf = new HashMap<Integer, Integer>();
-
+        BufferedReader inBuf_dices =inBuf_game;
         
         try {
             
@@ -251,8 +259,48 @@ public class ClientHandler implements Runnable {
 
 
                 };
-                
-                lines(im);
+
+                int dice_throws = 1;
+
+                while(dice_throws < 3)
+                {
+
+                    dice_roll(inBuf_dices, wurf);
+                    rolled_dices = wurf;
+                    dice_throws += 1;
+
+                    if(dice_throws == 3)
+                    {
+                        Thread.sleep(2000);
+                        outBuf.println("The dices have fallen: ");
+                        for(int f = 0; f < rolled_dices.size(); f++)
+                        {
+
+                            outBuf.println("[" + rolled_dices.get(f) + "]");
+
+                        }
+                        addtoDB(rolled_dices,inBuf_game);
+
+                    }
+                }
+
+               
+
+
+                ;
+
+            }      
+        } catch (Exception e) 
+        {
+                // TODO: handle exception
+                outBuf.println("Errord during rolling: " + e.getMessage());
+        }
+    } 
+
+    public void dice_roll(BufferedReader inBuf, HashMap<Integer,Integer> wurf) throws Exception
+    {
+            String im = "========================================";
+            lines(im);
                 
                 outBuf.println("Which dice should be rerolled:");
                 
@@ -268,6 +316,7 @@ public class ClientHandler implements Runnable {
                 
 
                 String wurf_w;
+
                 int new_roll;
                 boolean right = false;
                 
@@ -279,17 +328,15 @@ public class ClientHandler implements Runnable {
                         cSocket.close();
 
                     }
-
                     wurf_w = String.valueOf(wurf_w);
-                    if(wurf_w == "skip")
+                    if(wurf_w == "skip" || wurf_w == "")
                     {
-
-                        break;
+                        
+                        right = false;
 
                     }
                     
-                    HashMap<Integer, Integer> reroll = new HashMap<Integer, Integer>();
-                 
+                    
                     lines(im);
                     
                     for(int a = 0; a < wurf_w.length(); a ++ )
@@ -299,8 +346,9 @@ public class ClientHandler implements Runnable {
                        if(würfel > 0 && würfel < 6)
                        {
                         // Minus one because array starts with 0;
-                        new_roll = (int)(Math.random()*5+1);
+                        new_roll = (int)(Math.random() * 5 + 1);
                         outBuf.println("Dice " + würfel + " was rerolled to: " + new_roll);
+                        
                         würfel -= 1;
                         
                         wurf.put(würfel, new_roll);
@@ -309,7 +357,7 @@ public class ClientHandler implements Runnable {
                        }else
                        {
 
-                        outBuf.println("Diesen Würfel gibt es nicht: " + würfel);
+                        outBuf.println("This Dice is invald: " + würfel);
 
                        }
                         
@@ -329,6 +377,7 @@ public class ClientHandler implements Runnable {
                     }
 
                     lines(im);
+                    
 
                     break;
 
@@ -339,19 +388,14 @@ public class ClientHandler implements Runnable {
 
                 lines(im);
 
-            }
-        } catch (Exception e) 
-        {
-                // TODO: handle exception
-                outBuf.println("Errord during rolling: " + e.getMessage());
-        }
+            
             
         
 
 
     }
     
-    public void lines(String line)
+    public  void lines(String line)
     {
 
         for(int i = 0; i < line.length(); i++)
@@ -361,6 +405,14 @@ public class ClientHandler implements Runnable {
 
         }
         outBuf.println("");
+
+    }
+    
+    public void addtoDB(HashMap<Integer, Integer> rolled_dices, BufferedReader inBuf_togameDB)
+    {
+        
+
+
 
     }
     
