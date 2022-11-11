@@ -410,10 +410,17 @@ public class ClientHandler implements Runnable {
     
     public void addtoDB(HashMap<Integer, Integer> rolled_dices, BufferedReader inBuf_togameDB)
     {
+        check(rolled_dices);
+
+
+
+    }
+
+    public  void check(HashMap<Integer, Integer> to_check) {
+
         
-
-
-
+       
+        
     }
     
 }
