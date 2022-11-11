@@ -255,10 +255,10 @@ public class ClientHandler implements Runnable {
                 
                 outBuf.println("Which dice should be rerolled:");
                 
-                for(int d = 1; d < 6; d++)
+                for(int m = 1; m < 6; m++)
                 {
 
-                    outBuf.println("[%s]".formatted(d));
+                    outBuf.println("[%s]".formatted(m));
 
                 }
                 
