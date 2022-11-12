@@ -276,7 +276,7 @@ public class ClientHandler implements Runnable {
                         for(int f = 0; f < rolled_dices.size(); f++)
                         {
 
-                            outBuf.println("[" + rolled_dices.get(f) + "]");
+                            outBuf.print("[" + rolled_dices.get(f) + "] ");
 
                         }
                         addtoDB(rolled_dices,inBuf_game);
@@ -308,9 +308,9 @@ public class ClientHandler implements Runnable {
                 {
                     
                    
-                    outBuf.println("[" + m + "]");
+                    outBuf.print("[" + m + "] ");
                 }
-                
+                outBuf.println("");
                 lines(im);
                 
                 
@@ -372,9 +372,10 @@ public class ClientHandler implements Runnable {
                     for(int a = 0; a < wurf.size();   a++ )
                     {
 
-                        outBuf.println(wurf.get(a));
+                        outBuf.print("[" + wurf.get(a) + "] ");
 
                     }
+                    outBuf.println();
 
                     lines(im);
                     
