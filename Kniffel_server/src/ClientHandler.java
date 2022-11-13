@@ -255,11 +255,11 @@ public class ClientHandler implements Runnable {
                 
                 for(int j = 0; j < wurf.size(); j++)
                 {
-                    outBuf.println((Integer)wurf.get(j));
+                    outBuf.print("["+ (Integer)wurf.get(j) + "] ");
 
 
                 };
-
+                outBuf.println("");
                 int dice_throws = 1;
 
                 while(dice_throws < 3)
@@ -279,6 +279,8 @@ public class ClientHandler implements Runnable {
                             outBuf.print("[" + rolled_dices.get(f) + "] ");
 
                         }
+                        outBuf.println("");
+                        lines(im);
                         addtoDB(rolled_dices,inBuf_game);
 
                     }
@@ -329,15 +331,12 @@ public class ClientHandler implements Runnable {
 
                     }
                     wurf_w = String.valueOf(wurf_w);
-                    if(wurf_w == "skip" || wurf_w == "")
+                    if(wurf_w == "")
                     {
                         
                         right = false;
 
                     }
-                    
-                    
-                    lines(im);
                     
                     for(int a = 0; a < wurf_w.length(); a ++ )
                     {
@@ -377,7 +376,7 @@ public class ClientHandler implements Runnable {
                     }
                     outBuf.println();
 
-                    lines(im);
+                   
                     
 
                     break;
@@ -411,17 +410,244 @@ public class ClientHandler implements Runnable {
     
     public void addtoDB(HashMap<Integer, Integer> rolled_dices, BufferedReader inBuf_togameDB)
     {
-        check(rolled_dices);
-
-
+        check(rolled_dices,inBuf_togameDB);
 
     }
 
-    public  void check(HashMap<Integer, Integer> to_check) {
+    public  void check(HashMap<Integer, Integer> to_check, BufferedReader inBuf_check) 
+    {
+
+        String im = "========================================";
+        int one = 0;
+        int two = 0;
+        int three = 0;
+        int four = 0;
+        int five = 0;
+        int six = 0;
+        String desicon = "";
+        try 
+        {
+
+            for(int m = 0; m < to_check.size(); m++)
+            {
+                int roll = to_check.get(m);
+                if(roll == 1){
+
+                    one += 1;
+
+
+                }
+                if(roll == 2){
+
+                    two += 1;
+
+
+                }
+                if(roll == 3){
+
+                    three += 1;
+
+
+                }
+                if(roll == 4){
+
+                    four += 1;
+
+
+                }
+                if(roll == 5){
+
+                    five += 1;
+
+
+                }
+                if(roll == 6){
+
+                    five += 1;
+
+
+                }
+
+            };
+       
+            
+            
+            outBuf.println("You have:");
+            HashMap<Integer, Integer> singels = new HashMap<Integer, Integer>();
+            singels = single( one, two, three, four, five, six );
+            combos(one, two, three, four, five, six );
+            lines(im);
+            outBuf.println("You'r choice: ");
+            while (( desicon == inBuf_check.readLine())){
+
+
+
+            }
+            lines(im);
+
+
+
+            
+        } catch (Exception e) 
+        {
+            // TODO: handle exception
+        }
+    }
+        
+    //checks single points
+    public void single( int one, int two, int three, int four, int five, int six)
+    {   
+        HashMap<Integer, Integer> singels = new HashMap<Integer, Integer>();
+        singels.put(0, 666);
+
+        outBuf.println("Singles:");
+        if(one > 0)
+        {
+            outBuf.println("[1] = " + one + "P");
+            singels.put(1, one);
+        }
+        if(two > 0)
+         {
+                outBuf.println("[2] = " + two * 2 + "P");
+                singels.put(2, two);
+        }
+        if(three > 0)
+        {
+                outBuf.println("[3] = " + three * 3 + "P");
+                singels.put(3, three);
+        }
+        if(four > 0)
+        {
+                outBuf.println("[4] = " + four * 4 + "P");
+                singels.put(4, four);
+        }
+        if(five > 0)
+        {
+             outBuf.println("[5] = " + five * 5 + "P");
+             singels.put(5, five);
+        }
+        if(six > 0)
+        {
+                outBuf.println("[6] = " + six * 6 + "P");
+                singels.put(6, six);
+        }
+        return_hash();
+    }
+    //checks if you have a combo
+    public void combos(int one, int two,int three, int four, int five, int six)
+    {
+        HashMap<Integer, Integer> numbers = new HashMap<Integer, Integer>();
+        outBuf.println("Combos:");
+        numbers.put(0, one);
+        numbers.put(1, two);
+        numbers.put(2, three);
+        numbers.put(3, four);
+        numbers.put(4, five);
+        numbers.put(5, six);
+        int Double = 0;
+        int Triple = 0;
+        int Quad = 0;
+        
+
+        for(int banane = 0; banane < numbers.size(); banane++)
+        {
+
+            if(numbers.get(banane) == 2)
+            {
+                Double = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
+                outBuf.println("[Double]  = " + (int)Double + "P");
+
+            }
+
+            
+            if(numbers.get(banane) == 3)
+            {
+                Triple = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
+                outBuf.println("[Triple]  = " + (int)Triple + "P" );
+
+            }
+            
+            if(numbers.get(banane) == 4)
+            {
+                Quad = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
+                outBuf.println("[Quad]  = " + Quad + "P" );
+
+            }
+            if(numbers.get(banane) == 4)
+            {    
+                //Kniffel is different you see it? 
+                
+                outBuf.print("{KNIFFEL}  = 50P || We bal" );
+
+            }
+
+
+        }
+
+
+        if(one == 1 && two == 1 && three == 1 && four == 1 && five == 1)
+        {
+
+        outBuf.println("[Small Street] = 30P");
+
+
+        }
+
+        if(two == 1 && three == 1 && four == 1 && five == 1 && six == 1)
+        {
+
+        outBuf.println("[Big Street] = 40P");
+
+
+        }
+
+        for(int Kong = 0; Kong < numbers.size(); Kong++)
+        {
+
+            if(numbers.get(Kong) == 3)
+            {
+
+                for(int strong = 0; strong < numbers.size(); strong++)
+                {
+
+                    if(numbers.get(strong) == 2)
+                    {
+
+                        outBuf.println("[Full House] = 25P");
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return 
+    
+    }
+
+
+    public HashMap<Integer, Integer> singels(Integer keyword, Integer value )
+    {
+        HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+
+        map.put(keyword, value);
+
+
+        return map;
+    }
+
+    
+    
+
+    
+
+
 
         
        
         
-    }
+   
     
 }
