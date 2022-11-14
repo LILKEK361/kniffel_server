@@ -92,7 +92,8 @@ public class ClientHandler implements Runnable {
                                 game(inBuf);
                         
                             } catch (Exception e) {
-                                // TODO: handle exception
+                                
+                                outBuf.println("Error occurred" + e.getMessage());
                             }
                             break;
                         default:
@@ -296,7 +297,7 @@ public class ClientHandler implements Runnable {
             }      
         } catch (Exception e) 
         {
-                // TODO: handle exception
+               
                 outBuf.println("Errord during rolling: " + e.getMessage());
         }
     } 
@@ -559,7 +560,8 @@ public class ClientHandler implements Runnable {
             
         } catch (Exception e) 
         {
-            // TODO: handle exception
+          
+            outBuf.println("Error occurred" + e.getMessage());
         }
     }
         
