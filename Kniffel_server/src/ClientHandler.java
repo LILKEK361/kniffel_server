@@ -91,7 +91,6 @@ public class ClientHandler implements Runnable {
                         case "start" :
                             try 
                             {   
-                                for (String line : ())
                                 create_sheet();
                                 game(inBuf);
                         
@@ -232,7 +231,7 @@ public class ClientHandler implements Runnable {
             
         
             String im = "========================================";
-            outBuf.println("Current player: ");
+            outBuf.write("Current player: ");
             for (int i = 0; i < gameDB.getNumberOfConnectedUsers(); i++)
             {
 

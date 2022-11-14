@@ -204,5 +204,16 @@ public class GameDB {
             readLock.unlock();
         }
     }
+
+    public void send(String s)
+    {
+
+        for(DataConnectedUser n : connectedUserList)
+        {
+            
+        }
+
+
+    }
  
 }
