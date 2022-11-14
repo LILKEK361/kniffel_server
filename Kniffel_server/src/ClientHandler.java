@@ -487,8 +487,8 @@ public class ClientHandler implements Runnable {
             while ((desicon = inBuf_check.readLine()) != null && go_on == false   )
             {
                 
-                if(desicon.equals("Single") || desicon.equals("single"))
-                {   outBuf.println("Which Single:");
+                if(desicon.equals("Single" /*Single like Pringel  */) || desicon.equals("single"))
+                {   outBuf.println("Which Single:"/*Single Persons in you area */);
                     while (( single_desicon = inBuf_check.readLine()) != null &&  go_on == false  )
                     {
                         int int_desicon = Integer.valueOf(single_desicon);   
@@ -504,7 +504,7 @@ public class ClientHandler implements Runnable {
                            outBuf.println("You must take another option");
                            annoying_counter += 1;
         
-                        }else if(annoying_counter > 4)
+                        }else if(annoying_counter >= 5)
                         {   //Bob trys to ruin the fun dont be like Bob or we will find you
                             outBuf.println("What is your problem?");
                             cSocket.close();
@@ -536,7 +536,7 @@ public class ClientHandler implements Runnable {
         
                         }
                     }
-                }else if(annoying_counter > 4)
+                }else if(annoying_counter >= 5)
                 {   
                     outBuf.println("What is your problem?");
                     cSocket.close();
