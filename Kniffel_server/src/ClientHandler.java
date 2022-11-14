@@ -479,28 +479,77 @@ public class ClientHandler implements Runnable {
             single( one, two, three, four, five, six );
             combos(one, two, three, four, five, six );
             lines(im);
-            outBuf.println("You'r choice: ");
+            outBuf.println("You'r choice: Single or Combo? ");
             boolean go_on = false;
-            while (( desicon = inBuf_check.readLine()) != null &&  go_on == false   ){
-
-                for(int h = 0; h < singel_points.size(); h++)
-                {
-                    int int_desicon = Integer.valueOf(desicon) ;
-                    int_desicon -= 1;
-                    if(singel_points.get(int_desicon) != null )
+            String single_desicon;
+            String combo_desicon;
+            int annoying_counter = 0;
+            while ((desicon = inBuf_check.readLine()) != null && go_on == false   )
+            {
+                
+                if(desicon.equals("Single") || desicon.equals("single"))
+                {   outBuf.println("Which Single:");
+                    while (( single_desicon = inBuf_check.readLine()) != null &&  go_on == false  )
                     {
+                        int int_desicon = Integer.valueOf(single_desicon);   
+                        if(singel_points.containsKey(int_desicon) && singel_points.get(int_desicon) != null )
+                        {
 
-                        outBuf.println(desicon + ": für " + singel_points.get(h));
-                        go_on = true;
+                            outBuf.println(int_desicon + ": for " + singel_points.get(int_desicon) * int_desicon + "P");
+                            go_on = true;
 
-                    }else
-                    {
-
-                        outBuf.println("You must take another option");
-
+                        }else if(!singel_points.containsKey(int_desicon) || singel_points.get(int_desicon) == null)
+                        {
+        
+                           outBuf.println("You must take another option");
+                           annoying_counter += 1;
+        
+                        }else if(annoying_counter > 4)
+                        {   
+                            outBuf.println("What is your problem?");
+                            cSocket.close();
+        
+                        }
                     }
+                }else if(desicon.equals("Combo") || desicon.equals("combo"))
+                {   
+                    outBuf.println("Which combo:");
+                    while (( combo_desicon = inBuf_check.readLine()) != null &&  go_on == false  )
+                    {
+                        
+                        if(combo_points.containsKey(combo_desicon) )
+                        {
+
+                            outBuf.println(combo_desicon + ": for " + combo_points.get(combo_desicon) + "P");
+                            go_on = true;
+
+                        }else if(!combo_points.containsKey(combo_desicon))
+                        {
+        
+                           outBuf.println("You must take another option");
+                           annoying_counter += 1;
+        
+                        }else if(annoying_counter > 4)
+                        {   
+                            outBuf.println("What is your problem?");
+                            cSocket.close();
+        
+                        }
+                    }
+                }else if(annoying_counter > 4)
+                {   
+                    outBuf.println("What is your problem?");
+                    cSocket.close();
 
                 }
+                else
+                {
+
+                   outBuf.println("You must take another option");
+                   annoying_counter += 1;
+
+                }
+                
 
             }
             lines(im);
@@ -517,45 +566,41 @@ public class ClientHandler implements Runnable {
     //checks single points
     public void single( int one, int two, int three, int four, int five, int six)
     {   
-        HashMap<Integer, Integer> singels = new HashMap<Integer, Integer>();
-        singels.put(0, 666);
+        
+        singel_points.put(0, 666);
 
         outBuf.println("Singles:");
         if(one > 0)
         {
             outBuf.println("[1] = " + one + "P");
-            singels.put(1, one);
-        }
+            singel_points.put(1, one);
+        }else{singel_points.put(1, null);}
         if(two > 0)
-         {
+        {
                 outBuf.println("[2] = " + two * 2 + "P");
-                singels.put(2, two);
-        }
+                singel_points.put(2, two);
+        }else{singel_points.put(2, null);}
         if(three > 0)
         {
                 outBuf.println("[3] = " + three * 3 + "P");
-                singels.put(3, three);
-        }
+                singel_points.put(3, three);
+        }else{singel_points.put(3, null);}
         if(four > 0)
         {
                 outBuf.println("[4] = " + four * 4 + "P");
-                singels.put(4, four);
-        }
+                singel_points.put(4, four);
+        }else{singel_points.put(4, null);}
         if(five > 0)
         {
              outBuf.println("[5] = " + five * 5 + "P");
-             singels.put(5, five);
-        }
+             singel_points.put(5, five);
+        }else{singel_points.put(5, null);}
         if(six > 0)
         {
                 outBuf.println("[6] = " + six * 6 + "P");
-                singels.put(6, six);
-        }
-        for (int l = 0; l < singels.size(); l++){
-
-            singel_points.put(l, singels.get(l));
-
-        }
+                singel_points.put(6, six);
+        }else{singel_points.put(6, null);}
+      
         
        
     }
@@ -599,14 +644,15 @@ public class ClientHandler implements Runnable {
             {
                 Quad = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
                 outBuf.println("[Quad]  = " + Quad + "P" );
-                combo_points.put("Quad", Double);
+                combo_points.put("Quad", Quad);
 
             }
-            if(numbers.get(banane) == 4)
+            if(numbers.get(banane) == 5)
             {    
                 //Kniffel is different you see it? 
                 
                 outBuf.print("{KNIFFEL}  = 50P || We bal" );
+                outBuf.println("");
                 combo_points.put("KNIFFEL", 50);
 
             }
@@ -619,7 +665,7 @@ public class ClientHandler implements Runnable {
         {
 
         outBuf.println("[Small Street] = 30P");
-        combo_points.put("Small Street", 50);
+        combo_points.put("Small Street", 30);
 
 
         }
@@ -628,7 +674,7 @@ public class ClientHandler implements Runnable {
         {
 
         outBuf.println("[Big Street] = 40P");
-        combo_points.put("Big Street", 50);
+        combo_points.put("Big Street", 40);
 
 
         }
@@ -646,7 +692,7 @@ public class ClientHandler implements Runnable {
                     {
 
                         outBuf.println("[Full House] = 25P");
-                        combo_points.put("Full House", 50);
+                        combo_points.put("Full House", 25);
                         
 
                     }
@@ -656,6 +702,8 @@ public class ClientHandler implements Runnable {
             }
 
         }
+
+       
     
     }
     
