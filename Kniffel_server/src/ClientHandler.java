@@ -505,7 +505,7 @@ public class ClientHandler implements Runnable {
                            annoying_counter += 1;
         
                         }else if(annoying_counter > 4)
-                        {   
+                        {   //Bob trys to ruin the fun dont be like Bob or we will find you
                             outBuf.println("What is your problem?");
                             cSocket.close();
         
