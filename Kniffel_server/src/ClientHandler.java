@@ -496,10 +496,11 @@ public class ClientHandler implements Runnable {
                     while (( single_desicon = inBuf_check.readLine()) != null &&  go_on == false  )
                     {
                         int int_desicon = Integer.valueOf(single_desicon);   
-                        if(singel_points.containsKey(int_desicon) &&  dice_sheet.get(int_desicon) == null )
+                        if(singel_points.containsKey(int_desicon) &&  dice_sheet.get(String.valueOf(int_desicon)) == null )
                         {
 
                             outBuf.println(int_desicon + ": for " + singel_points.get(int_desicon) * int_desicon + "P");
+                            dice_sheet.put(String.valueOf(single_desicon), (Integer.valueOf(single_desicon) * Integer.valueOf(int_desicon) ));
                             go_on = true;
 
                         }else if(!singel_points.containsKey(int_desicon) || singel_points.get(int_desicon) == null)
