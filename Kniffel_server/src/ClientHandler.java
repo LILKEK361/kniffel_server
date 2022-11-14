@@ -90,7 +90,8 @@ public class ClientHandler implements Runnable {
                             break;
                         case "start" :
                             try 
-                            {
+                            {   
+                                for (String line : ())
                                 create_sheet();
                                 game(inBuf);
                         
