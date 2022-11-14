@@ -210,7 +210,7 @@ public class GameDB {
 
         for(DataConnectedUser n : connectedUserList)
         {
-            
+            n.send
         }
 
 
