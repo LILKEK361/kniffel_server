@@ -529,7 +529,7 @@ public class ClientHandler implements Runnable {
                            outBuf.println("You must take another option");
                            annoying_counter += 1;
         
-                        }else if(annoying_counter > 4)
+                        }else if(annoying_counter >= 5)
                         {   
                             outBuf.println("What is your problem?");
                             cSocket.close();
