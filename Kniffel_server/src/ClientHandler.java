@@ -32,6 +32,8 @@ public class ClientHandler implements Runnable {
     public boolean success = false;
     public HashMap<Integer, Integer> singel_points = new HashMap<Integer, Integer>();
     public HashMap<String, Integer> combo_points   = new HashMap<String, Integer>();
+    public HashMap<String, Integer> dice_sheet = new HashMap<String, Integer>();
+    public String[] list = {"1","2","3","4","5", "6", "Bonuspoints", "Double", "Triple", "Quad", "Kniffel", "Small Street", "Big Street", "Full House" };
    
     
 
@@ -89,6 +91,7 @@ public class ClientHandler implements Runnable {
                         case "start" :
                             try 
                             {
+                                create_sheet();
                                 game(inBuf);
                         
                             } catch (Exception e) {
@@ -480,7 +483,7 @@ public class ClientHandler implements Runnable {
             single( one, two, three, four, five, six );
             combos(one, two, three, four, five, six );
             lines(im);
-            outBuf.println("You'r choice: Single or Combo? ");
+            outBuf.println("You'r choice: Single or Combo or blank? ");
             boolean go_on = false;
             String single_desicon;
             String combo_desicon;
@@ -518,10 +521,11 @@ public class ClientHandler implements Runnable {
                     while (( combo_desicon = inBuf_check.readLine()) != null &&  go_on == false  )
                     {
                         
-                        if(combo_points.containsKey(combo_desicon) )
+                        if(combo_points.containsKey(combo_desicon) && dice_sheet.get(combo_desicon) == null)
                         {
 
                             outBuf.println(combo_desicon + ": for " + combo_points.get(combo_desicon) + "P");
+                            dice_sheet.put(String.valueOf(combo_desicon), combo_points.get(combo_desicon));
                             go_on = true;
 
                         }else if(!combo_points.containsKey(combo_desicon))
@@ -707,6 +711,19 @@ public class ClientHandler implements Runnable {
 
        
     
+    }
+
+    public void create_sheet()
+    {
+
+        dice_sheet.put("0", 666);
+        for(int i = 1; i < list.length; i++)
+        {
+
+            dice_sheet.put(String.valueOf(list[i]), null);
+
+        }
+
     }
     
     

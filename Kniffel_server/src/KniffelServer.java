@@ -21,6 +21,8 @@ public class KniffelServer {
      */
     private static final int MAX_CONNECTING_USERS = 20;
 
+    
+
     public static void main(String[] args) {
 
         /**

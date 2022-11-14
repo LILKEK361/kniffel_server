@@ -11,6 +11,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Pattern;
+import java.util.HashMap;
 
 /**
  * Class for handle all game data
@@ -30,6 +31,7 @@ public class GameDB {
      * list of connected user
      */
     public final ArrayList<DataConnectedUser> connectedUserList;
+    public HashMap<String, Integer> dice_sheet;
 
     /**
      * maximal number od players
@@ -202,4 +204,5 @@ public class GameDB {
             readLock.unlock();
         }
     }
+ 
 }
