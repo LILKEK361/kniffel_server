@@ -5,6 +5,9 @@
  */
 package gamedb;
 
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
@@ -42,6 +45,7 @@ public class GameDB {
      * maximal number of users
      */
     private final int maxUsers;
+    private Socket dsocket;
 
     /**
      * Constructor of class
@@ -205,13 +209,32 @@ public class GameDB {
         }
     }
 
-    public void send(String s)
-    {
+    public void sendln(String s) throws Exception
+    {   
+       
 
         for(DataConnectedUser n : connectedUserList)
-        {
-           /*Sends a message to ever conntectedUser */
-           //TODO 
+        {   
+
+            this.dsocket = n.getSocket();
+            PrintWriter w = new PrintWriter(this.dsocket.getOutputStream(), true);
+            w.println(s);
+
+        }
+
+
+    }
+    public void send(String s) throws Exception
+    {   
+       
+
+        for(DataConnectedUser n : connectedUserList)
+        {   
+
+            this.dsocket = n.getSocket();
+            PrintWriter w = new PrintWriter(this.dsocket.getOutputStream(), true);
+            w.print(s);
+
         }
 
 
