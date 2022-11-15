@@ -224,20 +224,4 @@ public class GameDB {
 
 
     }
-    public void send(String s) throws Exception
-    {   
-       
-
-        for(DataConnectedUser n : connectedUserList)
-        {   
-
-            this.dsocket = n.getSocket();
-            PrintWriter w = new PrintWriter(this.dsocket.getOutputStream(), true);
-            w.print(s);
-
-        }
-
-
-    }
- 
 }

@@ -34,6 +34,7 @@ public class ClientHandler implements Runnable {
     public HashMap<String, Integer> combo_points   = new HashMap<String, Integer>();
     public HashMap<String, Integer> dice_sheet = new HashMap<String, Integer>();
     public String[] list = {"1","2","3","4","5", "6", "Bonuspoints", "Double", "Triple", "Quad", "Kniffel", "Small Street", "Big Street", "Full House" };
+    public int rounds = 13;
    
     
 
@@ -92,7 +93,11 @@ public class ClientHandler implements Runnable {
                             try 
                             {   
                                 create_sheet();
-                                game(inBuf);
+                                while(rounds > 0)
+                                {
+                                    
+                                    game(inBuf);
+                                }
                         
                             } catch (Exception e) {
                                 
@@ -139,7 +144,7 @@ public class ClientHandler implements Runnable {
         outBuf.println("exit - close server connection");
         outBuf.println("help - informs about all server commands");
         outBuf.println("identify - show your identification");
-        outBuf.println("message <text> - send <text> to all connected users");
+        outBuf.println("message <text> - sendln <text> to all connected users");
         outBuf.println("rename <nickname> - rename user to <nickname>");
         outBuf.println("users - show all users");
     }
@@ -231,11 +236,11 @@ public class ClientHandler implements Runnable {
             
         
             String im = "========================================";
-            gameDB.send("Current Players:");
+            gameDB.sendln("Current Players:");
             for (int i = 0; i < gameDB.getNumberOfConnectedUsers(); i++)
             {
 
-                gameDB.send(gameDB.getConnectedUserNichname(i));
+                gameDB.sendln(gameDB.getConnectedUserNichname(i));
 
 
             }
@@ -246,7 +251,7 @@ public class ClientHandler implements Runnable {
             {
 
                 lines(im);
-                gameDB.send("Throw || Player: " + gameDB.getConnectedUserNichname(i));
+                gameDB.sendln("Throw || Player: " + gameDB.getConnectedUserNichname(i));
                 lines(im);
 
                 
@@ -261,11 +266,11 @@ public class ClientHandler implements Runnable {
                 
                 for(int j = 0; j < wurf.size(); j++)
                 {
-                    gameDB.send("["+ (Integer)wurf.get(j) + "] ");
+                    gameDB.sendln("["+ (Integer)wurf.get(j) + "] ");
 
 
                 };
-                gameDB.send("");
+                gameDB.sendln("");
                 int dice_throws = 1;
 
                 while(dice_throws < 3)
@@ -278,14 +283,14 @@ public class ClientHandler implements Runnable {
                     if(dice_throws == 3)
                     {
                         Thread.sleep(2000);
-                        gameDB.send("The dices have fallen: ");
+                        gameDB.sendln("The dices have fallen: ");
                         for(int f = 0; f < rolled_dices.size(); f++)
                         {
 
-                            gameDB.send("[" + rolled_dices.get(f) + "] ");
+                            gameDB.sendln("[" + rolled_dices.get(f) + "] ");
 
                         }
-                        gameDB.send("");
+                        gameDB.sendln("");
                         lines(im);
                         addtoDB(rolled_dices,inBuf_game, gameDB.getConnectedUserNichname(i));
 
@@ -307,52 +312,53 @@ public class ClientHandler implements Runnable {
 
     public void dice_roll(BufferedReader inBuf, HashMap<Integer,Integer> wurf) throws Exception
     {
-            String im = "========================================";
-            lines(im);
+        String im = "========================================";
+        String bananenkuchen ="";
+        lines(im);
                 
-                outBuf.println("Which dice should be rerolled:");
+        gameDB.sendln("Which dice should be rerolled:");
                 
-                for(int m = 1; m < 6; m++)
-                {
+        for(int m = 1; m < 6; m++)
+        {
                     
+           bananenkuchen = bananenkuchen + ("[" + m + "] ");
                    
-                    outBuf.print("[" + m + "] ");
-                }
-                outBuf.println("");
-                lines(im);
+        }
+        gameDB.sendln(bananenkuchen);        
+        lines(im);
                 
                 
 
-                String wurf_w;
+        String wurf_w;
 
-                int new_roll;
-                boolean right = false;
+        int new_roll;
+        boolean right = false;
                 
-                while (( wurf_w = inBuf.readLine()) != null && right == false)
-                {
-                    if(wurf_w == "exit")
-                    {
+        while (( wurf_w = inBuf.readLine()) != null && right == false)
+        {
+            if(wurf_w == "exit")
+            {
 
-                        cSocket.close();
+                cSocket.close();
 
-                    }
-                    wurf_w = String.valueOf(wurf_w);
-                    if(wurf_w == "")
-                    {
+            }
+            wurf_w = String.valueOf(wurf_w);
+            if(wurf_w == "")
+            {
                         
-                        right = false;
+                right = false;
 
-                    }
+            }
                     
-                    for(int a = 0; a < wurf_w.length(); a ++ )
-                    {
+            for(int a = 0; a < wurf_w.length(); a ++ )
+            {
 
                        int würfel = Integer.parseInt(String.valueOf(wurf_w.charAt(a)));
                        if(würfel > 0 && würfel < 6)
                        {
                         // Minus one because array starts with 0;
                         new_roll = (int)(Math.random() * 5 + 1);
-                        outBuf.println("Dice " + würfel + " was rerolled to: " + new_roll);
+                        gameDB.sendln("Dice " + würfel + " was rerolled to: " + new_roll);
                         
                         würfel -= 1;
                         
@@ -371,16 +377,16 @@ public class ClientHandler implements Runnable {
 
                     lines(im);
                     
-                    outBuf.println("Current dices: ");
-                    
+                    gameDB.sendln("Current dices: ");
+                    bananenkuchen = "";
                     
                     for(int a = 0; a < wurf.size();   a++ )
                     {
 
-                        outBuf.print("[" + wurf.get(a) + "] ");
+                        bananenkuchen += ("[" + wurf.get(a) + "] ");
 
                     }
-                    outBuf.println();
+                    gameDB.sendln(bananenkuchen);
 
                    
                     
@@ -401,16 +407,17 @@ public class ClientHandler implements Runnable {
 
     }
     
-    public  void lines(String line)
-    {
+    public  void lines(String line) throws Exception
+    {   
+        String str = "";
 
         for(int i = 0; i < line.length(); i++)
         {
 
-            outBuf.print("=");
+            str = str + "=";
 
         }
-        outBuf.println("");
+        gameDB.sendln(str);
 
     }
     
@@ -478,12 +485,12 @@ public class ClientHandler implements Runnable {
        
             
             
-            gameDB.send(nickname + " has:");
+            gameDB.sendln(nickname + " has:");
             
             single( one, two, three, four, five, six );
             combos(one, two, three, four, five, six );
             lines(im);
-            gameDB.send(nickname + " choice: Single or Combo or blank? ");
+            gameDB.sendln(nickname + " choice: Single or Combo or blank? ");
             boolean go_on = false;
             String single_desicon;
             String combo_desicon;
@@ -492,66 +499,66 @@ public class ClientHandler implements Runnable {
             {
                 
                 if(desicon.equals("Single" /*Single like Pringel  */) || desicon.equals("single"))
-                {   gameDB.send("Which Single:"/*Single Persons in you area */);
+                {   gameDB.sendln("Which Single:"/*Single Persons in you area */);
                     while (( single_desicon = inBuf_check.readLine()) != null &&  go_on == false  )
                     {
                         int int_desicon = Integer.valueOf(single_desicon);   
                         if(singel_points.containsKey(int_desicon) &&  dice_sheet.get(String.valueOf(int_desicon)) == null )
                         {
 
-                            gameDB.send(int_desicon + ": for " + singel_points.get(int_desicon) * int_desicon + "P");
+                            gameDB.sendln(int_desicon + ": for " + singel_points.get(int_desicon) * int_desicon + "P");
                             dice_sheet.put(String.valueOf(single_desicon), (Integer.valueOf(single_desicon) * Integer.valueOf(int_desicon) ));
                             go_on = true;
 
                         }else if(!singel_points.containsKey(int_desicon) || singel_points.get(int_desicon) == null)
                         {
         
-                            gameDB.send("You must take another option");
+                            gameDB.sendln("You must take another option");
                            annoying_counter += 1;
         
                         }else if(annoying_counter >= 5)
                         {   //Bob trys to ruin the fun dont be like Bob or we will find you
-                            gameDB.send("What is your problem?" + nickname);
+                            gameDB.sendln("What is your problem?" + nickname);
                             cSocket.close();
         
                         }
                     }
                 }else if(desicon.equals("Combo") || desicon.equals("combo"))
                 {   
-                    gameDB.send("Which combo:");
+                    gameDB.sendln("Which combo:");
                     while (( combo_desicon = inBuf_check.readLine()) != null &&  go_on == false  )
                     {
                         
                         if(combo_points.containsKey(combo_desicon) && dice_sheet.get(combo_desicon) == null)
                         {
 
-                            gameDB.send(combo_desicon + ": for " + combo_points.get(combo_desicon) + "P");
+                            gameDB.sendln(combo_desicon + ": for " + combo_points.get(combo_desicon) + "P");
                             dice_sheet.put(String.valueOf(combo_desicon), combo_points.get(combo_desicon));
                             go_on = true;
 
                         }else if(!combo_points.containsKey(combo_desicon))
                         {
         
-                            gameDB.send("You must take another option");
+                            gameDB.sendln("You must take another option");
                            annoying_counter += 1;
         
                         }else if(annoying_counter >= 5)
                         {   
-                            gameDB.send("What is your problem?");
+                            gameDB.sendln("What is your problem?");
                             cSocket.close();
         
                         }
                     }
                 }else if(annoying_counter >= 5)
                 {   
-                    gameDB.send("What is your problem?" + nickname  );
+                    gameDB.sendln("What is your problem?" + nickname  );
                     cSocket.close();
 
                 }
                 else
                 {
 
-                    gameDB.send("You must take another option");
+                    gameDB.sendln("You must take another option");
                    annoying_counter += 1;
 
                 }
@@ -576,35 +583,35 @@ public class ClientHandler implements Runnable {
         
         singel_points.put(0, 666);
 
-        gameDB.send("Singles:");
+        gameDB.sendln("Singles:");
         if(one > 0)
         {
-            gameDB.send("[1] = " + one + "P");
+            gameDB.sendln("[1] = " + one + "P");
             singel_points.put(1, one);
         }else{singel_points.put(1, null);}
         if(two > 0)
         {
-            gameDB.send("[2] = " + two * 2 + "P");
+            gameDB.sendln("[2] = " + two * 2 + "P");
             singel_points.put(2, two);
         }else{singel_points.put(2, null);}
         if(three > 0)
         {
-            gameDB.send("[3] = " + three * 3 + "P");
+            gameDB.sendln("[3] = " + three * 3 + "P");
             singel_points.put(3, three);
         }else{singel_points.put(3, null);}
         if(four > 0)
         {
-            gameDB.send("[4] = " + four * 4 + "P");
+            gameDB.sendln("[4] = " + four * 4 + "P");
             singel_points.put(4, four);
         }else{singel_points.put(4, null);}
         if(five > 0)
         {
-            gameDB.send("[5] = " + five * 5 + "P");
+            gameDB.sendln("[5] = " + five * 5 + "P");
             singel_points.put(5, five);
         }else{singel_points.put(5, null);}
         if(six > 0)
         {
-            gameDB.send("[6] = " + six * 6 + "P");
+            gameDB.sendln("[6] = " + six * 6 + "P");
             singel_points.put(6, six);
         }else{singel_points.put(6, null);}
       
@@ -633,7 +640,7 @@ public class ClientHandler implements Runnable {
             if(numbers.get(banane) == 2)
             {
                 Double = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
-                gameDB.send("[Double]  = " + (int)Double + "P");
+                gameDB.sendln("[Double]  = " + (int)Double + "P");
                 combo_points.put("Double", Double);
 
             }
@@ -642,7 +649,7 @@ public class ClientHandler implements Runnable {
             if(numbers.get(banane) == 3)
             {
                 Triple = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
-                gameDB.send("[Triple]  = " + (int)Triple + "P" );
+                gameDB.sendln("[Triple]  = " + (int)Triple + "P" );
                 combo_points.put("Triple", Triple);
 
             }
@@ -650,7 +657,7 @@ public class ClientHandler implements Runnable {
             if(numbers.get(banane) == 4)
             {
                 Quad = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
-                gameDB.send("[Quad]  = " + Quad + "P" );
+                gameDB.sendln("[Quad]  = " + Quad + "P" );
                 combo_points.put("Quad", Quad);
 
             }
@@ -658,8 +665,8 @@ public class ClientHandler implements Runnable {
             {    
                 //Kniffel is different you see it? 
                 
-                gameDB.send("{KNIFFEL}  = 50P || We bal" );
-                gameDB.send("");
+                gameDB.sendln("{KNIFFEL}  = 50P || We bal" );
+                gameDB.sendln("");
                 combo_points.put("KNIFFEL", 50);
 
             }
@@ -671,7 +678,7 @@ public class ClientHandler implements Runnable {
         if(one == 1 && two == 1 && three == 1 && four == 1 && five == 1)
         {
 
-            gameDB.send("[Small Street] = 30P");
+            gameDB.sendln("[Small Street] = 30P");
             combo_points.put("Small Street", 30);
 
 
@@ -680,7 +687,7 @@ public class ClientHandler implements Runnable {
         if(two == 1 && three == 1 && four == 1 && five == 1 && six == 1)
         {
 
-            gameDB.send("[Big Street] = 40P");
+            gameDB.sendln("[Big Street] = 40P");
             combo_points.put("Big Street", 40);
 
 
@@ -698,7 +705,7 @@ public class ClientHandler implements Runnable {
                     if(numbers.get(strong) == 2)
                     {
 
-                        gameDB.send("[Full House] = 25P");
+                        gameDB.sendln("[Full House] = 25P");
                         combo_points.put("Full House", 25);
                         
 
