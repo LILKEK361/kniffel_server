@@ -56,7 +56,7 @@ public class ClientHandler implements Runnable {
                 gameDB.addConnectedUser(cSocket);
                 
                 outBuf.println("Type help for further information.");
-                outBuf.println("server: ok");
+                outBuf.println("server status: ok");
                 outBuf.println("");
 
                 String cInString;
@@ -513,12 +513,12 @@ public class ClientHandler implements Runnable {
                         }else if(!singel_points.containsKey(int_desicon) || singel_points.get(int_desicon) == null)
                         {
         
-                            gameDB.sendln("You must take another option");
+                            outBuf.println("You must take another option");
                            annoying_counter += 1;
         
                         }else if(annoying_counter >= 5)
                         {   //Bob trys to ruin the fun dont be like Bob or we will find you
-                            gameDB.sendln("What is your problem?" + nickname);
+                            outBuf.println("What is your problem?" + nickname);
                             cSocket.close();
         
                         }
@@ -539,12 +539,12 @@ public class ClientHandler implements Runnable {
                         }else if(!combo_points.containsKey(combo_desicon))
                         {
         
-                            gameDB.sendln("You must take another option");
+                           outBuf.println("You must take another option");
                            annoying_counter += 1;
         
                         }else if(annoying_counter >= 5)
                         {   
-                            gameDB.sendln("What is your problem?");
+                            gameDB.sendln("What is your problem?" + nickname);
                             cSocket.close();
         
                         }
