@@ -34,6 +34,7 @@ public class ClientHandler implements Runnable {
     public HashMap<String, Integer> combo_points   = new HashMap<String, Integer>();
     public HashMap<String, Integer> dice_sheet = new HashMap<String, Integer>();
     public String[] list = {"1","2","3","4","5", "6", "Bonuspoints", "Double", "Triple", "Quad", "Kniffel", "Small Street", "Big Street", "Full House" };
+    public String[] chioces = {"A very fine choice: ", "Congratulations you named yourself: ", "Wow you named yourself: ", "I didn't expected you to call yourself: ", "Creativ aren't we: "};
     public int rounds = 13;
    
     
@@ -44,7 +45,7 @@ public class ClientHandler implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run()  {
         try {
 
             BufferedReader inBuf = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
@@ -58,6 +59,42 @@ public class ClientHandler implements Runnable {
                 outBuf.println("Type help for further information.");
                 outBuf.println("server status: ok");
                 outBuf.println("");
+
+                outBuf.println("Please chose a nickname:");
+                String nickname_String ="///";
+                boolean nickname_given = false;
+                while ((( nickname_String = inBuf.readLine()) != null) && (nickname_given == false)) 
+                {
+                   
+                    
+                    if(gameDB.connectedUserList.contains(nickname_String))
+                    { 
+                            outBuf.println("Please choose another nickname!\n");
+
+                    }else if(nickname_String.equals("Anonymous"))
+                    {
+
+                            outBuf.println("Very funny but chose another nickname!");
+                            outBuf.println("I will be watching you!");
+
+                    }else if(!gameDB.connectedUserList.contains(nickname_String))
+                    {
+                            int kkk = (int)(Math.random() * 4 + 1 );
+                            outBuf.println(chioces[kkk] + nickname_String);
+                            handleCmdRename(nickname_String);
+                            nickname_given = true;
+
+                    }
+                    break;
+                    
+                    
+
+                }
+
+            
+                String im = "========================================";
+                lines(im);
+                
 
                 String cInString;
 
@@ -122,6 +159,9 @@ public class ClientHandler implements Runnable {
                 outBuf.println("byebye");
                 outBuf.println("server: okay");
                 cSocket.close();
+            }catch(Exception e) 
+            {
+                outBuf.println("Error occurred" + e.getMessage());
             }
         } catch (IOException ex) {
             System.out.println("exception: " + ex.toString());
@@ -156,7 +196,7 @@ public class ClientHandler implements Runnable {
         String trimedCmdString = cmdString.replaceFirst("rename", "");
         trimedCmdString = trimedCmdString.trim();
         try {
-            outBuf.println("server: rename");
+            
             gameDB.renameConnectedUser(cSocket, trimedCmdString);
         } catch (GameDBUserExistsException ex) {
             outBuf.println("error: user not exists");
