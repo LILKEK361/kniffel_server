@@ -138,6 +138,7 @@ public class GamePlay {
                     {
 
                         choices = choices.trim();
+                        GameDB.sendln(kokos);
 
                         
                         if(choices.equals("") && choices.equals(null))
@@ -152,10 +153,15 @@ public class GamePlay {
                             {
 
                                 int btw = (int)(Math.random()*5*1);
-                                int ch = choices.charAt(l);
+                                int ch = Integer.parseInt(String.valueOf(choices.charAt(l)));
+                                
+                                GameDB.sendln("Dice [" + ch + "] was rerolled to :" + btw);
+                                
                                 ch -= 1;
                                 dice_throw.put(ch,btw);
-                               
+
+                                
+                                
                             }
                             
                             ok = true;
@@ -179,45 +185,7 @@ public class GamePlay {
                     {
 
                         choices = choices.trim();
-
-                        
-                        if(choices.equals("") || choices.equals(null))
-                        {
-                            ok = true;
-                            break;
-                        }
-                        if(choices.length() <= 5)
-                        {
-                            
-                            for(int l = 0; l < choices.length(); l++)
-                            {
-                                int btw = (int)(Math.random()*5*1);
-                                int replace = (Integer.valueOf(choices.charAt(l))) - 1;
-                                dice_throw.put(replace,btw);
-                               
-                            }
-                            
-                            ok = true;
-                            break;
-
-                        }else
-                        {
-
-                            w.println("You tipped to many!!");
-
-                        }
-                        ok = true;
-                    }
-
-                    GameDB.sendln(throwed_dices);
-                    GameDB.sendln(kokos);
-                    GameDB.sendln("Which dice should be rerolled:");
-                    GameDB.sendln(options);
-                    ok = false;
-                    while((choices = inReader.readLine()) != null && !error && ok == false)
-                    {
-
-                        choices = choices.trim();
+                        GameDB.sendln(kokos);
 
                         
                         if(choices.equals("") && choices.equals(null))
@@ -232,9 +200,60 @@ public class GamePlay {
                             {
 
                                 int btw = (int)(Math.random()*5*1);
-                                int replace = (Integer.valueOf(choices.charAt(l))) - 1;
-                                dice_throw.put(replace,btw);
-                               
+                                int ch = Integer.parseInt(String.valueOf(choices.charAt(l)));
+                                
+                                GameDB.sendln("Dice [" + ch + "] was rerolled to :" + btw);
+                                
+                                ch -= 1;
+                                dice_throw.put(ch,btw);
+
+                                
+                                
+                            }
+                            
+                            ok = true;
+                            break;
+
+                        }else
+                        {
+
+                            w.println("You tipped to many!!");
+
+                        }
+                        ok = true;
+                    }                    GameDB.sendln(throwed_dices);
+                    GameDB.sendln(kokos);
+                    GameDB.sendln("Which dice should be rerolled:");
+                    GameDB.sendln(options);
+                    ok = false;
+                    while((choices = inReader.readLine()) != null && !error && ok == false)
+                    {
+
+                        choices = choices.trim();
+                        GameDB.sendln(kokos);
+
+                        
+                        if(choices.equals("") && choices.equals(null))
+                        {
+                            ok = true;
+                            break;
+                        }
+                        if(choices.length() <= 5)
+                        {
+                            
+                            for(int l = 0; l < choices.length(); l++)
+                            {
+
+                                int btw = (int)(Math.random()*5*1);
+                                int ch = Integer.parseInt(String.valueOf(choices.charAt(l)));
+                                
+                                GameDB.sendln("Dice [" + ch + "] was rerolled to :" + btw);
+                                
+                                ch -= 1;
+                                dice_throw.put(ch,btw);
+
+                                
+                                
                             }
                             
                             ok = true;
