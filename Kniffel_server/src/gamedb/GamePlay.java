@@ -30,6 +30,7 @@ public class GamePlay {
     String throwed_dices;
     String options = "[1] [2] [3] [4] [5]";
     String choices;
+    int choice;
 
 
     public String[] dice_sheet = {"1","2","3","4","5","6","Bonuspoints","Double","Tripel","Quad","Kniffel","Full House","Small Street","Big Street","Final Points"};
@@ -129,11 +130,12 @@ public class GamePlay {
 
                     throwed_dices = "["+  dice_throw.get(0) + "] " +"[" + dice_throw.get(1) + "] "+ "[" + dice_throw.get(2) + "] "+ "["+ dice_throw.get(3) + "] "+"[" + dice_throw.get(4) + "]";
                     
+                    GameDB.sendln("Current dices:");
                     GameDB.sendln(throwed_dices);
                     GameDB.sendln(kokos);
                     GameDB.sendln("Which dice should be rerolled:");
                     GameDB.sendln(options);
-                    boolean ok = false;
+                    Boolean ok = false;
                     while((choices = inReader.readLine()) != null && !error && ok == false)
                     {
 
@@ -152,10 +154,10 @@ public class GamePlay {
                             for(int l = 0; l < choices.length(); l++)
                             {
 
-                                int btw = (int)(Math.random()*5*1);
+                                int btw = (int)(Math.random()*5+1);
                                 int ch = Integer.parseInt(String.valueOf(choices.charAt(l)));
                                 
-                                GameDB.sendln("Dice [" + ch + "] was rerolled to :" + btw);
+                                GameDB.sendln("Dice [" + ch + "] was rerolled to: " + btw);
                                 
                                 ch -= 1;
                                 dice_throw.put(ch,btw);
@@ -175,7 +177,7 @@ public class GamePlay {
                         }
                         ok = true;
                     }
-
+                    GameDB.sendln("Current dices:");
                     GameDB.sendln(throwed_dices);
                     GameDB.sendln(kokos);
                     GameDB.sendln("Which dice should be rerolled:");
@@ -199,10 +201,10 @@ public class GamePlay {
                             for(int l = 0; l < choices.length(); l++)
                             {
 
-                                int btw = (int)(Math.random()*5*1);
+                                int btw = (int)(Math.random()*5+1);
                                 int ch = Integer.parseInt(String.valueOf(choices.charAt(l)));
                                 
-                                GameDB.sendln("Dice [" + ch + "] was rerolled to :" + btw);
+                                GameDB.sendln("Dice [" + ch + "] was rerolled to: " + btw);
                                 
                                 ch -= 1;
                                 dice_throw.put(ch,btw);
@@ -221,7 +223,9 @@ public class GamePlay {
 
                         }
                         ok = true;
-                    }                    GameDB.sendln(throwed_dices);
+                    }
+                    GameDB.sendln("Current dices:");
+                    GameDB.sendln(throwed_dices);
                     GameDB.sendln(kokos);
                     GameDB.sendln("Which dice should be rerolled:");
                     GameDB.sendln(options);
@@ -244,10 +248,10 @@ public class GamePlay {
                             for(int l = 0; l < choices.length(); l++)
                             {
 
-                                int btw = (int)(Math.random()*5*1);
+                                int btw = (int)(Math.random()*5+1);
                                 int ch = Integer.parseInt(String.valueOf(choices.charAt(l)));
                                 
-                                GameDB.sendln("Dice [" + ch + "] was rerolled to :" + btw);
+                                GameDB.sendln("Dice [" + ch + "] was rerolled to: " + btw);
                                 
                                 ch -= 1;
                                 dice_throw.put(ch,btw);
@@ -267,6 +271,10 @@ public class GamePlay {
                         }
                         ok = true;
                     }
+
+
+
+
                     check(dice_throw);
 
                     
@@ -338,8 +346,39 @@ public class GamePlay {
 
     }
 
-    public void singels(int ones, int  tows, int threes,int fours,int fives,int sixs)
+    public HashMap<Integer, Integer> singels(int ones, int  tows, int threes,int fours,int fives,int sixs) throws Exception
     {
+        HashMap<Integer, Integer> singels = new HashMap<Integer, Integer>();
+        if(ones > 0)
+        {
+            GameDB.sendln("[1] = " + ones * 1 + "P");
+            singels.put(0,ones * 1);
+        }else {singel_points.put(0, null);}
+        if(tows > 0)
+        {
+            GameDB.sendln("[2] = " + tows * 2 + "P");
+            singels.put(1,ones * 1);
+        }else {singel_points.put(0, null);}
+        if(threes > 0)
+        {
+            GameDB.sendln("[3] = " + threes * 3 + "P");
+            singels.put(2,ones * 1);
+        }else {singel_points.put(0, null);}
+        if(fours > 0)
+        {
+            GameDB.sendln("[4] = " + fours * 4 + "P");
+            singels.put(3,ones * 1);
+        }else {singel_points.put(0, null);
+        if(fives > 0)
+        {
+            GameDB.sendln("[5] = " + fives * 5 + "P");
+            singels.put(4,ones * 1);;
+        }else {singel_points.put(4, null);}
+        if(sixs > 0)
+        {
+            GameDB.sendln("[6] = " + sixs * 6 + "P");
+            singels.put(5,sixs * 6);
+        }else {singel_points.put(0, null);}
 
 
 
