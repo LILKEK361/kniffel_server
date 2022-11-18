@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.management.modelmbean.DescriptorSupport;
+
 import gamedb.*;
 
 
@@ -28,7 +30,7 @@ public class GamePlay {
     //Dice Saves and Choice
     public HashMap<Integer, Integer> dice_throw = new HashMap<Integer, Integer>();
     String throwed_dices;
-    String options = "[1] [2] [3] [4] [5]";
+    String options = "[1][2][3][4][5]";
     String choices;
     int choice;
 
@@ -62,7 +64,7 @@ public class GamePlay {
 
     public void game(GameDB gameDB) throws Exception
     {   
-        String input_check;
+        String input_check = "";
 
         this.GameDB = gameDB;
 
@@ -115,7 +117,7 @@ public class GamePlay {
                     this.user_socket = Bananaboy.getSocket();
                     inReader =  new BufferedReader(new InputStreamReader(user_socket.getInputStream()));
                     w = new PrintWriter(this.user_socket.getOutputStream(), true);
-
+                    
                     GameDB.sendln("THROW: " + round +" || THROWS LEFT: " + dice_throws);
                     GameDB.sendln("Player:" + GameDB.getConnectedUserNichname(user_socket) );
                     GameDB.sendln(kokos);
@@ -340,47 +342,291 @@ public class GamePlay {
             }
 
         }
+        
+        GameDB.sendln("The dices have fallen:");
+        
+        GameDB.sendln("Singles:");
+        HashMap<Integer, Integer> single_points = singels(ones,tows,threes,fours,fives,sixs);
+        
+        GameDB.sendln("Combos:");
+        HashMap<String, Integer> combo_points =  combos(ones,tows,threes,fours,fives,sixs);
 
-        singels(ones,tows,threes,fours,fives,sixs);
+        GameDB.sendln(kokos);
+        GameDB.sendln("Singles or Combos or Blank");
+        GameDB.sendln(kokos);
 
+        add_to_db(single_points, combo_points);
 
     }
 
     public HashMap<Integer, Integer> singels(int ones, int  tows, int threes,int fours,int fives,int sixs) throws Exception
     {
-        HashMap<Integer, Integer> singels = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> singel_points = new HashMap<Integer, Integer>();
         if(ones > 0)
         {
             GameDB.sendln("[1] = " + ones * 1 + "P");
-            singels.put(0,ones * 1);
+            singel_points.put(0,ones * 1);
         }else {singel_points.put(0, null);}
         if(tows > 0)
         {
             GameDB.sendln("[2] = " + tows * 2 + "P");
-            singels.put(1,ones * 1);
-        }else {singel_points.put(0, null);}
+            singel_points.put(1, tows * 2);
+        }else {singel_points.put(1, null);}
         if(threes > 0)
         {
             GameDB.sendln("[3] = " + threes * 3 + "P");
-            singels.put(2,ones * 1);
-        }else {singel_points.put(0, null);}
+            singel_points.put(2,threes * 3);
+        }else {singel_points.put(2, null);}
         if(fours > 0)
         {
             GameDB.sendln("[4] = " + fours * 4 + "P");
-            singels.put(3,ones * 1);
-        }else {singel_points.put(0, null);
+            singel_points.put(3,fours * 4);
+        }else {singel_points.put(3, null);}
         if(fives > 0)
         {
             GameDB.sendln("[5] = " + fives * 5 + "P");
-            singels.put(4,ones * 1);;
+            singel_points.put(4,fives * 5);;
         }else {singel_points.put(4, null);}
         if(sixs > 0)
         {
             GameDB.sendln("[6] = " + sixs * 6 + "P");
-            singels.put(5,sixs * 6);
+            singel_points.put(5,sixs * 6);
         }else {singel_points.put(0, null);}
 
+        return singel_points;
+        
+    }
+
+    public HashMap<String, Integer> combos(int ones, int  tows, int threes,int fours,int fives,int sixs) throws Exception{
+        
+        HashMap<Integer, Integer> numbers = new HashMap<Integer, Integer>();
+        HashMap<String, Integer> combo_points = new HashMap<String, Integer>();
+        numbers.put(0, ones);
+        numbers.put(1, tows);
+        numbers.put(2, threes);
+        numbers.put(3, fours);
+        numbers.put(4, fives);
+        numbers.put(5, sixs);
+        int Double = 0;
+        int Triple = 0;
+        int Quad = 0;
+        for(int banane = 0; banane < numbers.size(); banane++)
+        {
+
+            if(numbers.get(banane) == 2)
+            {
+                Double = 1 * ones  + 2 * tows  + 3 * threes + 4 * fours + 5 * fives + 6 * sixs;
+                GameDB.sendln("[Double]  = " + (int)Double + "P");
+                combo_points.put("Double", Double);
+
+            }
+
+            
+            if(numbers.get(banane) == 3)
+            {
+                Triple = 1 * ones  + 2 * tows  + 3 * threes + 4 * fours + 5 * fives + 6 * sixs;
+                GameDB.sendln("[Triple]  = " + (int)Triple + "P" );
+                combo_points.put("Triple", Triple);
+
+            }
+            
+            if(numbers.get(banane) == 4)
+            {
+                Quad = 1 * ones  + 2 * tows  + 3 * threes + 4 * fours + 5 * fives + 6 * sixs;
+                GameDB.sendln("[Quad]  = " + Quad + "P" );
+                combo_points.put("Quad", Quad);
+
+            }
+            if(numbers.get(banane) == 5)
+            {    
+                //Kniffel is different you see it? 
+                
+                GameDB.sendln("{KNIFFEL}  = 50P || We bal" );
+                GameDB.sendln("");
+                combo_points.put("KNIFFEL", 50);
+
+            }
+
+
+        }
+
+
+        if(ones== 1 && tows == 1 && threes== 1 && fours== 1 && fives== 1)
+        {
+
+            GameDB.sendln("[Small Street] = 30P");
+            combo_points.put("Small Street", 30);
+
+
+        }
+
+        if(tows == 1 && threes== 1 && fours== 1 && fives== 1 && sixs== 1)
+        {
+
+            GameDB.sendln("[Big Street] = 40P");
+            combo_points.put("Big Street", 40);
+
+
+        }
+
+        for(int Kong = 0; Kong < numbers.size(); Kong++)
+        {
+
+            if(numbers.get(Kong) == 3)
+            {
+
+                for(int strong = 0; strong < numbers.size(); strong++)
+                {
+
+                    if(numbers.get(strong) == 2)
+                    {
+
+                        GameDB.sendln("[Full House] = 25P");
+                        combo_points.put("Full House", 25);
+                        
+
+                    }
+
+                }
+
+            }
+
+        }
+
+       
+    
+        return combo_points;
+
+        
+    }
+
+    public void add_to_db(HashMap<Integer, Integer> singles, HashMap<String, Integer> combos) throws Exception
+    {
+        String choice ="";
+        boolean desicon = false; 
+        String nick = GameDB.getConnectedUserNichname(user_socket);
+        while((choice = inReader.readLine()) != null && desicon == false)
+        {
+
+            switch (choice) {
+                case "Singles":
+                    GameDB.sendln("Which one:");
+                    while((choice = inReader.readLine()) != null && desicon == false)
+                    {
+
+                        int choosen_dice = Integer.valueOf(choice);
+                       
+                        choosen_dice -= 1;
+                        switch (nicknames.get(nick)) {
+                            case "player_1_sheet":
+                                
+                                player_1_sheet.put(choice, singles.get(choosen_dice));
+                                desicon = true; 
+                                break;
+                            case "player_2_sheet":
+                                desicon = true; 
+                                player_2_sheet.put(choice, singles.get(choosen_dice));
+                                break;
+                                
+                            case "player_3_sheet":
+                                player_3_sheet.put(choice, singles.get(choosen_dice));
+                                desicon = true; 
+                                break;
+                            case "player_4_sheet":
+                                player_4_sheet.put(choice, singles.get(choosen_dice));
+                                desicon = true; 
+                                break;
+                            case "player_5_sheet":
+                                player_5_sheet.put(choice, singles.get(choosen_dice));
+                                desicon = true; 
+                                break;
+                                
+                            default:
+                                break;
+                        }
+                        
+
+                    }
+                    break;
+                case "Combos":
+                    GameDB.sendln("Which one:");
+                    while((choice = inReader.readLine()) != null && desicon == false)
+                    {
+                        for(int b = 0; b < dice_sheet.length; b++)
+                        {
+
+                            if(choice == dice_sheet[b])
+                            {
+                                switch(nicknames.get(nick))
+                                {
+                                    case "player_1_sheet":
+                                
+                                        if(player_1_sheet.get(choice) == null)
+                                        {
+                                            player_1_sheet.put(choice, combos.get(choice));
+
+                                        }
+                                        desicon = true; 
+                                        break;
+                                    case "player_2_sheet":
+                                        if(player_2_sheet.get(choice) == null)
+                                        {
+                                            player_2_sheet.put(choice, combos.get(choice));
+
+                                        }
+                                        desicon = true; 
+                                        break;
+                                    case "player_3_sheet":
+                                        if(player_3_sheet.get(choice) == null)
+                                        {
+                                            player_3_sheet.put(choice, combos.get(choice));
+
+                                        }
+                                        desicon = true; 
+                                        break;
+                                    case "player_4_sheet":
+                                        if(player_4_sheet.get(choice) == null)
+                                        {
+                                            player_4_sheet.put(choice, combos.get(choice));
+
+                                        }
+                                        desicon = true; 
+                                        break;
+                                    case "player_5_sheet":
+                                        if(player_5_sheet.get(choice) == null)
+                                        {
+                                            player_5_sheet.put(choice, combos.get(choice));
+
+                                        }
+                                        desicon = true; 
+                                        break;
+
+
+                                }
+
+
+                            };
+                        }
+
+
+                        
+
+                    }
+                case "Blank":
+              
+                default:
+
+                    GameDB.sendln("Error!");
+                    
+                   
+            }
+            GameDB.sendln(kokos);
+            GameDB.sendln("Next Player");
+            GameDB.sendln(kokos);
+
+        }
 
 
     }
 }
+
