@@ -1,7 +1,10 @@
 package gamedb;
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.HashMap;
+import java.util.List;
 
 import gamedb.*;
 
@@ -10,507 +13,316 @@ import gamedb.*;
 
 public class GamePlay {
     
-    public GameDB GameDB;
-    public PrintWriter outBuf;
-    public HashMap<Integer, Integer> singel_points = new HashMap<Integer, Integer>();
-    public HashMap<String, Integer> combo_points   = new HashMap<String, Integer>();
-    public HashMap<String, Integer> dice_sheet = new HashMap<String, Integer>();
-    public String[] list = {"1","2","3","4","5", "6", "Bonuspoints", "Double", "Triple", "Quad", "Kniffel", "Small Street", "Big Street", "Full House" };
+    private GameDB GameDB;
+    public PrintWriter w;
+    public BufferedReader inReader;
     
-    public void lines(String in) throws Exception
+    //Data
+    public HashMap<String, Integer> player_1_sheet = new HashMap<String, Integer>();
+    public HashMap<String, Integer> player_2_sheet = new HashMap<String, Integer>();
+    public HashMap<String, Integer> player_3_sheet = new HashMap<String, Integer>();
+    public HashMap<String, Integer> player_4_sheet = new HashMap<String, Integer>();
+    public HashMap<String, Integer> player_5_sheet = new HashMap<String, Integer>();
+    public HashMap<String, String> nicknames = new HashMap<String, String>();
+
+    //Dice Saves and Choice
+    public HashMap<Integer, Integer> dice_throw = new HashMap<Integer, Integer>();
+    String throwed_dices;
+    String options = "[1] [2] [3] [4] [5]";
+    String choices;
+
+
+    public String[] dice_sheet = {"1","2","3","4","5","6","Bonuspoints","Double","Tripel","Quad","Kniffel","Full House","Small Street","Big Street","Final Points"};
+    public Socket user_socket;
+    public int player_counter = 0  ;
+    public boolean error = false;
+    public int dice_throws = 13;
+    public int round = 1;
+    String kokos = "==================================";
+
+
+    public HashMap<String, Integer> get_data(HashMap<String, Integer> create_sheet)
+    {
+
+        for(int i = 0; i < dice_sheet.length; i++)
+        {
+
+            create_sheet.put(dice_sheet[i], null);
+
+        }
+
+
+
+
+        return create_sheet;
+    }
+
+
+
+    public void game(GameDB gameDB) throws Exception
     {   
-        String str = "";
+        String input_check;
 
-        for(char ch : in.toCharArray())
+        this.GameDB = gameDB;
+
+        player_1_sheet = get_data(player_1_sheet);
+        player_2_sheet = get_data(player_2_sheet);
+        player_3_sheet = get_data(player_3_sheet);
+        player_4_sheet = get_data(player_4_sheet);
+        player_5_sheet = get_data(player_5_sheet);
+
+        
+
+        for(DataConnectedUser n : GameDB.connectedUserList) 
         {
+            this.user_socket = n.getSocket();
+            inReader =  new BufferedReader(new InputStreamReader(user_socket.getInputStream()));
+            w = new PrintWriter(this.user_socket.getOutputStream(), true);
 
-           str = str + "="; 
-
+            w.println("Pls press Enter to Enter");
+            if((input_check = inReader.readLine()) != null)
+            {
+                
+                player_counter ++;
+            }
+            nicknames.put(GameDB.getConnectedUserNichname(user_socket), "player_%d_sheet".formatted(player_counter));
 
         }
+        if(player_counter <= 5)
+        {
 
-        GameDB.sendln(str);
-
-
-    }
-    
-    public void roll(GameDB gameDB, BufferedReader inBuf_dices, PrintWriter outBuf_game  ) throws Exception
-    {
-        GameDB = gameDB;
-        GameDB.sendln("Game starting soon");
-
-        HashMap<Integer, Integer> rolled_dices = new HashMap<Integer,Integer>(); 
-        HashMap<Integer, Integer> wurf = new HashMap<Integer, Integer>();
-        
-        try {
-            
-        
-            String im = "========================================";
-            GameDB.sendln("Current Player: ");
-            for (int i = 0; i < GameDB.getNumberOfConnectedUsers(); i++)
+            GameDB.sendln("Current player: 5/5");
+            for(DataConnectedUser k : GameDB.connectedUserList)
             {
 
-                GameDB.sendln(GameDB.getConnectedUserNichname(i));
-
+                GameDB.sendln(k.getNickname() + " is online");
 
             }
+
             
+            GameDB.sendln(kokos);;
             
 
-            for(int i = 0; i < GameDB.getNumberOfConnectedUsers(); i++) 
+
+
+
+            while(dice_throws > 0 && !error)
             {
 
-                lines(im);
-                GameDB.sendln("Throw || Player: " + GameDB.getConnectedUserNichname(i));
-                lines(im);
-
-                
-                
-
-                for(int e = 0; e < 5; e++){
-
-                    int roll = (int)(Math.random() * 5 + 1);
-                    wurf.put(e, roll);
-
-                }
-                
-                for(int j = 0; j < wurf.size(); j++)
-                {
-                    GameDB.sendln("["+ (Integer)wurf.get(j) + "] ");
-
-
-                };
-                GameDB.sendln("");
-                int dice_throws = 1;
-
-                while(dice_throws < 3)
-                {
-
-                    dice_roll(inBuf_dices, wurf);
-                    rolled_dices = wurf;
-                    dice_throws += 1;
-
-                    if(dice_throws == 3)
-                    {
-                        Thread.sleep(2000);
-                        GameDB.sendln("The dices have fallen: ");
-                        for(int f = 0; f < rolled_dices.size(); f++)
-                        {
-
-                            GameDB.sendln("[" + rolled_dices.get(f) + "] ");
-
-                        }
-                        GameDB.sendln("");
-                        lines(im);
-                        addtoDB(rolled_dices, inBuf_dices, GameDB.getConnectedUserNichname(i));
-
-                    }
-                }
-
-               
-
-
-                ;
-
-            }      
-        } catch (Exception e) 
-        {
-               
-            outBuf_game.println("Errord during rolling: " + e.getMessage());
-        }
-
-    }
-
-    public void dice_roll(BufferedReader inBuf, HashMap<Integer,Integer> wurf) throws Exception
-    {
-        String im = "========================================";
-        String bananenkuchen ="";
-        lines(im);
-                
-        GameDB.sendln("Which dice should be rerolled:");
-                
-        for(int m = 1; m < 6; m++)
-        {
-                    
-           bananenkuchen = bananenkuchen + ("[" + m + "] ");
-                   
-        }
-        GameDB.sendln(bananenkuchen);        
-        lines(im);
-                
-                
-
-        String wurf_w;
-
-        int new_roll;
-        boolean right = false;
-                
-        while (( wurf_w = inBuf.readLine()) != null && right == false)
-        {
-            wurf_w = String.valueOf(wurf_w);
-            if(wurf_w == "skip")
-            {
-                        
-                right = false;
-
-            }
-                    
-            for(int a = 0; a < wurf_w.length(); a ++ )
-            {
-
-                       int würfel = Integer.parseInt(String.valueOf(wurf_w.charAt(a)));
-                       if(würfel > 0 && würfel < 6)
-                       {
-                        // Minus one because array starts with 0;
-                        new_roll = (int)(Math.random() * 5 + 1);
-                        GameDB.sendln("Dice " + würfel + " was rerolled to: " + new_roll);
-                        
-                        würfel -= 1;
-                        
-                        wurf.put(würfel, new_roll);
-                        
-                        right = true;
-                       }else
-                       {
-
-                        outBuf.println("This Dice is invald: " + würfel);
-
-                       }
-                        
-
-                    } 
-
-                    lines(im);
-                    
-                    GameDB.sendln("Current dices: ");
-                    bananenkuchen = "";
-                    
-                    for(int a = 0; a < wurf.size();   a++ )
-                    {
-
-                        bananenkuchen += ("[" + wurf.get(a) + "] ");
-
-                    }
-                    GameDB.sendln(bananenkuchen);
-
-                   
-                    
-
-                    break;
-
-                    
-
-
-                };
-
-                lines(im);
-
-            
-            
-        
-
-
-    }
-    public void addtoDB(HashMap<Integer, Integer> rolled_dices, BufferedReader inBuf_togameDB, String nickname)
-    {
-        check(rolled_dices,inBuf_togameDB, nickname);
-
-    }
-
-    public  void check(HashMap<Integer, Integer> to_check, BufferedReader inBuf_check, String nickname) 
-    {
-
-        String im = "========================================";
-        int one = 0;
-        int two = 0;
-        int three = 0;
-        int four = 0;
-        int five = 0;
-        int six = 0;
-        String desicon = "";
-        try 
-        {
-
-            for(int m = 0; m < to_check.size(); m++)
-            {
-                int roll = to_check.get(m);
-                if(roll == 1){
-
-                    one += 1;
-
-
-                }
-                if(roll == 2){
-
-                    two += 1;
-
-
-                }
-                if(roll == 3){
-
-                    three += 1;
-
-
-                }
-                if(roll == 4){
-
-                    four += 1;
-
-
-                }
-                if(roll == 5){
-
-                    five += 1;
-
-
-                }
-                if(roll == 6){
-
-                    five += 1;
-
-
-                }
-
-            };
-       
-            
-            
-            GameDB.sendln(nickname + " has:");
-            
-            single( one, two, three, four, five, six );
-            combos(one, two, three, four, five, six );
-            lines(im);
-            GameDB.sendln(nickname + " choice: Single or Combo or blank? ");
-            boolean go_on = false;
-            String single_desicon;
-            String combo_desicon;
-            int annoying_counter = 0;
-            while ((desicon = inBuf_check.readLine()) != null && go_on == false   )
-            {
-                
-                if(desicon.equals("Single" /*Single like Pringel  */) || desicon.equals("single"))
-                {   GameDB.sendln("Which Single:"/*Single Persons in you area */);
-                    while (( single_desicon = inBuf_check.readLine()) != null &&  go_on == false  )
-                    {
-                        int int_desicon = Integer.valueOf(single_desicon);   
-                        if(singel_points.containsKey(int_desicon) &&  dice_sheet.get(String.valueOf(int_desicon)) == null )
-                        {
-
-                            GameDB.sendln(int_desicon + ": for " + singel_points.get(int_desicon) * int_desicon + "P");
-                            dice_sheet.put(String.valueOf(single_desicon), (Integer.valueOf(single_desicon) * Integer.valueOf(int_desicon) ));
-                            go_on = true;
-
-                        }else if(!singel_points.containsKey(int_desicon) || singel_points.get(int_desicon) == null)
-                        {
-        
-                            outBuf.println("You must take another option");
-                            annoying_counter += 1;
-        
-                        }else if(annoying_counter >= 5)
-                        {   //Bob trys to ruin the fun dont be like Bob or we will find you
-                            outBuf.println("What is your problem?" + nickname);
-                            annoying_counter = 0;
-        
-                        }
-                    }
-                }else if(desicon.equals("Combo") || desicon.equals("combo"))
+                for(DataConnectedUser Bananaboy : GameDB.connectedUserList)
                 {   
-                    GameDB.sendln("Which combo:");
-                    while (( combo_desicon = inBuf_check.readLine()) != null &&  go_on == false  )
+                    this.user_socket = Bananaboy.getSocket();
+                    inReader =  new BufferedReader(new InputStreamReader(user_socket.getInputStream()));
+                    w = new PrintWriter(this.user_socket.getOutputStream(), true);
+
+                    GameDB.sendln("THROW: " + round +" || THROWS LEFT: " + dice_throws);
+                    GameDB.sendln("Player:" + GameDB.getConnectedUserNichname(user_socket) );
+                    GameDB.sendln(kokos);
+
+                    for(int d = 0; d < 5; d++)
                     {
-                        
-                        if(combo_points.containsKey(combo_desicon) && dice_sheet.get(combo_desicon) == null)
-                        {
 
-                            GameDB.sendln(combo_desicon + ": for " + combo_points.get(combo_desicon) + "P");
-                            dice_sheet.put(String.valueOf(combo_desicon), combo_points.get(combo_desicon));
-                            go_on = true;
+                        int dice = (int)(Math.random() * 5 + 1);
+                        dice_throw.put(d, dice);
 
-                        }else if(!combo_points.containsKey(combo_desicon))
-                        {
-        
-                           outBuf.println("You must take another option");
-                           annoying_counter += 1;
-        
-                        }else if(annoying_counter >= 5)
-                        {   
-                            GameDB.sendln("What is your problem?" + nickname);
-                            annoying_counter = 0;
-        
-                        }
                     }
-                }else if(annoying_counter >= 5)
-                {   
-                    GameDB.sendln("What is your problem?" + nickname  );
-                    annoying_counter = 0;
+
+                    throwed_dices = "["+  dice_throw.get(0) + "] " +"[" + dice_throw.get(1) + "] "+ "[" + dice_throw.get(2) + "] "+ "["+ dice_throw.get(3) + "] "+"[" + dice_throw.get(4) + "]";
+                    
+                    GameDB.sendln(throwed_dices);
+                    GameDB.sendln(kokos);
+                    GameDB.sendln("Which dice should be rerolled:");
+                    GameDB.sendln(options);
+                    boolean ok = false;
+                    while((choices = inReader.readLine()) != null && !error && ok == false)
+                    {
+
+                        choices = choices.trim();
+
+                        
+                        if(choices.equals("") && choices.equals(null))
+                        {
+                            ok = true;
+                            break;
+                        }
+                        if(choices.length() <= 5)
+                        {
+                            
+                            for(int l = 0; l < choices.length(); l++)
+                            {
+
+                                int btw = (int)(Math.random()*5*1);
+                                int ch = choices.charAt(l);
+                                ch -= 1;
+                                dice_throw.put(ch,btw);
+                               
+                            }
+                            
+                            ok = true;
+                            break;
+
+                        }else
+                        {
+
+                            w.println("You tipped to many!!");
+
+                        }
+                        ok = true;
+                    }
+
+                    GameDB.sendln(throwed_dices);
+                    GameDB.sendln(kokos);
+                    GameDB.sendln("Which dice should be rerolled:");
+                    GameDB.sendln(options);
+                    ok = false;
+                    while((choices = inReader.readLine()) != null && !error && ok == false)
+                    {
+
+                        choices = choices.trim();
+
+                        
+                        if(choices.equals("") || choices.equals(null))
+                        {
+                            ok = true;
+                            break;
+                        }
+                        if(choices.length() <= 5)
+                        {
+                            
+                            for(int l = 0; l < choices.length(); l++)
+                            {
+                                int btw = (int)(Math.random()*5*1);
+                                int replace = (Integer.valueOf(choices.charAt(l))) - 1;
+                                dice_throw.put(replace,btw);
+                               
+                            }
+                            
+                            ok = true;
+                            break;
+
+                        }else
+                        {
+
+                            w.println("You tipped to many!!");
+
+                        }
+                        ok = true;
+                    }
+
+                    GameDB.sendln(throwed_dices);
+                    GameDB.sendln(kokos);
+                    GameDB.sendln("Which dice should be rerolled:");
+                    GameDB.sendln(options);
+                    ok = false;
+                    while((choices = inReader.readLine()) != null && !error && ok == false)
+                    {
+
+                        choices = choices.trim();
+
+                        
+                        if(choices.equals("") && choices.equals(null))
+                        {
+                            ok = true;
+                            break;
+                        }
+                        if(choices.length() <= 5)
+                        {
+                            
+                            for(int l = 0; l < choices.length(); l++)
+                            {
+
+                                int btw = (int)(Math.random()*5*1);
+                                int replace = (Integer.valueOf(choices.charAt(l))) - 1;
+                                dice_throw.put(replace,btw);
+                               
+                            }
+                            
+                            ok = true;
+                            break;
+
+                        }else
+                        {
+
+                            w.println("You tipped to many!!");
+
+                        }
+                        ok = true;
+                    }
+                    check(dice_throw);
+
+                    
+                    
+
 
                 }
-                else
-                {
-
-                    GameDB.sendln("You must take another option");
-                   annoying_counter += 1;
-
-                }
-                
+               
+                round ++;
+                break;
 
             }
-            lines(im);
 
 
-
-            
-        } catch (Exception e) 
-        {
-          
-            outBuf.println("Error occurred" + e.getMessage());
         }
+
+
     }
-        
-    //checks single points
-    public void single( int one, int two, int three, int four, int five, int six) throws Exception
+
+    public void check(HashMap<Integer, Integer> dice_throw) throws Exception
     {   
-        
-        singel_points.put(0, 666);
 
-        GameDB.sendln("Singles:");
-        if(one > 0)
+        int ones = 0;
+        int tows = 0;
+        int threes = 0;
+        int fours = 0;
+        int fives = 0;
+        int sixs = 0;
+
+        for(int w = 0; w < dice_throw.size(); w++)
         {
-            GameDB.sendln("[1] = " + one + "P");
-            singel_points.put(1, one);
-        }else{singel_points.put(1, null);}
-        if(two > 0)
-        {
-            GameDB.sendln("[2] = " + two * 2 + "P");
-            singel_points.put(2, two);
-        }else{singel_points.put(2, null);}
-        if(three > 0)
-        {
-            GameDB.sendln("[3] = " + three * 3 + "P");
-            singel_points.put(3, three);
-        }else{singel_points.put(3, null);}
-        if(four > 0)
-        {
-            GameDB.sendln("[4] = " + four * 4 + "P");
-            singel_points.put(4, four);
-        }else{singel_points.put(4, null);}
-        if(five > 0)
-        {
-            GameDB.sendln("[5] = " + five * 5 + "P");
-            singel_points.put(5, five);
-        }else{singel_points.put(5, null);}
-        if(six > 0)
-        {
-            GameDB.sendln("[6] = " + six * 6 + "P");
-            singel_points.put(6, six);
-        }else{singel_points.put(6, null);}
-      
-        
-       
+
+            if(dice_throw.get(w) == 1  )
+            {
+
+                ones++;
+
+            }else if(dice_throw.get(w) == 2 )
+            {
+
+                tows++;
+
+            }else if(dice_throw.get(w) == 3 )
+            {
+
+                threes++;
+
+            }else if(dice_throw.get(w) == 4 )
+            {
+
+                fours++;
+
+            }else if(dice_throw.get(w) == 5 )
+            {
+
+                fives++;
+
+            }else if(dice_throw.get(w) == 6  )
+            {
+
+                sixs++;
+
+            }
+
+        }
+
+        singels(ones,tows,threes,fours,fives,sixs);
+
+
     }
-    //checks if you have a combo
-    public void combos(int one, int two,int three, int four, int five, int six) throws Exception
+
+    public void singels(int ones, int  tows, int threes,int fours,int fives,int sixs)
     {
-        HashMap<Integer, Integer> numbers = new HashMap<Integer, Integer>();
-        outBuf.println("Combos:");
-        numbers.put(0, one);
-        numbers.put(1, two);
-        numbers.put(2, three);
-        numbers.put(3, four);
-        numbers.put(4, five);
-        numbers.put(5, six);
-        int Double = 0;
-        int Triple = 0;
-        int Quad = 0;
-        
-
-        for(int banane = 0; banane < numbers.size(); banane++)
-        {
-
-            if(numbers.get(banane) == 2)
-            {
-                Double = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
-                GameDB.sendln("[Double]  = " + (int)Double + "P");
-                combo_points.put("Double", Double);
-
-            }
-
-            
-            if(numbers.get(banane) == 3)
-            {
-                Triple = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
-                GameDB.sendln("[Triple]  = " + (int)Triple + "P" );
-                combo_points.put("Triple", Triple);
-
-            }
-            
-            if(numbers.get(banane) == 4)
-            {
-                Quad = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
-                GameDB.sendln("[Quad]  = " + Quad + "P" );
-                combo_points.put("Quad", Quad);
-
-            }
-            if(numbers.get(banane) == 5)
-            {    
-                //Kniffel is different you see it? 
-                
-                GameDB.sendln("{KNIFFEL}  = 50P || We bal" );
-                GameDB.sendln("");
-                combo_points.put("KNIFFEL", 50);
-
-            }
 
 
-        }
 
-
-        if(one == 1 && two == 1 && three == 1 && four == 1 && five == 1)
-        {
-
-            GameDB.sendln("[Small Street] = 30P");
-            combo_points.put("Small Street", 30);
-
-
-        }
-
-        if(two == 1 && three == 1 && four == 1 && five == 1 && six == 1)
-        {
-
-            GameDB.sendln("[Big Street] = 40P");
-            combo_points.put("Big Street", 40);
-
-
-        }
-
-        for(int Kong = 0; Kong < numbers.size(); Kong++)
-        {
-
-            if(numbers.get(Kong) == 3)
-            {
-
-                for(int strong = 0; strong < numbers.size(); strong++)
-                {
-
-                    if(numbers.get(strong) == 2)
-                    {
-
-                        GameDB.sendln("[Full House] = 25P");
-                        combo_points.put("Full House", 25);
-                        
-
-                    }
-
-                }
-
-            }
-
-        }
-
-       
-    
     }
-    
-
-
 }

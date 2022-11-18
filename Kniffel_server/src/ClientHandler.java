@@ -130,7 +130,7 @@ public class ClientHandler implements Runnable {
                             try 
                             {   
                                 
-                                gamePlay.roll(gameDB, inBuf, outBuf);
+                                gamePlay.game( gameDB);
                         
                             } catch (Exception e) {
                                 
@@ -262,10 +262,7 @@ public class ClientHandler implements Runnable {
     }
 
 
-    public  void game(BufferedReader inBuf_game) throws Exception
-    {   
-
-    } 
+    
 
     
     public  void lines(String line) throws Exception
@@ -278,7 +275,7 @@ public class ClientHandler implements Runnable {
             str = str + "=";
 
         }
-        gameDB.sendln(str);
+        outBuf.println(str);
 
     }
     
