@@ -109,7 +109,7 @@ public class GamePlay {
 
 
 
-            while(dice_throws > 0 && !error)
+            while(dice_throws > 0)
             {
 
                 for(DataConnectedUser Bananaboy : GameDB.connectedUserList)
@@ -179,6 +179,7 @@ public class GamePlay {
                         }
                         ok = true;
                     }
+                    throwed_dices = "["+  dice_throw.get(0) + "] " +"[" + dice_throw.get(1) + "] "+ "[" + dice_throw.get(2) + "] "+ "["+ dice_throw.get(3) + "] "+"[" + dice_throw.get(4) + "]";
                     GameDB.sendln("Current dices:");
                     GameDB.sendln(throwed_dices);
                     GameDB.sendln(kokos);
@@ -226,6 +227,7 @@ public class GamePlay {
                         }
                         ok = true;
                     }
+                    throwed_dices = "["+  dice_throw.get(0) + "] " +"[" + dice_throw.get(1) + "] "+ "[" + dice_throw.get(2) + "] "+ "["+ dice_throw.get(3) + "] "+"[" + dice_throw.get(4) + "]";
                     GameDB.sendln("Current dices:");
                     GameDB.sendln(throwed_dices);
                     GameDB.sendln(kokos);
@@ -508,18 +510,22 @@ public class GamePlay {
         while((choice = inReader.readLine()) != null && desicon == false)
         {
 
-            switch (choice) {
-                case "Singles":
-                    GameDB.sendln("Which one:");
-                    while((choice = inReader.readLine()) != null && desicon == false)
-                    {
+            if(choice == "Singles")
+            {
+               
+                GameDB.sendln("Which one:");
+                while((choice = inReader.readLine()) != null && desicon == false)
+                {
 
-                        int choosen_dice = Integer.valueOf(choice);
+                    int choosen_dice = Integer.valueOf(choice);
                        
-                        choosen_dice -= 1;
-                        switch (nicknames.get(nick)) {
+                    choosen_dice -= 1;
+                    if(singles.get(choosen_dice) != null)
+                    {
+                        switch (nicknames.get(nick)) 
+                        {
                             case "player_1_sheet":
-                                
+                                    
                                 player_1_sheet.put(choice, singles.get(choosen_dice));
                                 desicon = true; 
                                 break;
@@ -542,13 +548,17 @@ public class GamePlay {
                                 break;
                                 
                             default:
-                                break;
+                                   break;
                         }
-                        
+                            
+                        break;
+                    }else{w.println("Pls choose another");}
+                     
+                }
+            }
+            if(choice ==  "Combos"){
 
-                    }
-                    break;
-                case "Combos":
+                
                     GameDB.sendln("Which one:");
                     while((choice = inReader.readLine()) != null && desicon == false)
                     {
@@ -607,23 +617,22 @@ public class GamePlay {
 
                             };
                         }
-
-
-                        
-
                     }
+                    break;
+                }
                 case "Blank":
-              
+                    break;
                 default:
 
                     GameDB.sendln("Error!");
+                
                     
                    
             }
             GameDB.sendln(kokos);
             GameDB.sendln("Next Player");
             GameDB.sendln(kokos);
-
+            break;
         }
 
 
