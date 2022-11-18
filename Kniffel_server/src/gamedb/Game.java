@@ -138,9 +138,13 @@ public class Game {
                        {
                         // Minus one because array starts with 0;
                         new_roll = (int)(Math.random() * 5 + 1);
+<<<<<<< Updated upstream:Kniffel_server/src/gamedb/Game.java
                         gameDB.sendln("Dice " + würfel + " was rerolled to: " + new_roll);
                         
                         würfel -= 1;
+=======
+                        Integer.parseInt(String.valueOf(wurf_w.charAt(a)));
+>>>>>>> Stashed changes:Kniffel_server/src/gamedb/GamePlay.java
                         
                         wurf.put(würfel, new_roll);
                         
