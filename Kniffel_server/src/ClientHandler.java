@@ -28,20 +28,20 @@ public class ClientHandler implements Runnable {
     private boolean shutdown = false;
     private final Socket cSocket;
     private final GameDB gameDB;
+    
     private PrintWriter outBuf = null;
     public boolean success = false;
-    public HashMap<Integer, Integer> singel_points = new HashMap<Integer, Integer>();
-    public HashMap<String, Integer> combo_points   = new HashMap<String, Integer>();
-    public HashMap<String, Integer> dice_sheet = new HashMap<String, Integer>();
-    public String[] list = {"1","2","3","4","5", "6", "Bonuspoints", "Double", "Triple", "Quad", "Kniffel", "Small Street", "Big Street", "Full House" };
+    
     public String[] chioces = {"A very fine choice: ", "Congratulations you named yourself: ", "Wow you named yourself: ", "I didn't expected you to call yourself: ", "Creativ aren't we: "};
     public int rounds = 13;
+    private GamePlay gamePlay = new GamePlay();
    
     
 
     ClientHandler(Socket cSocket, GameDB gameDB) {
         this.cSocket = cSocket;
         this.gameDB = gameDB;
+        
     }
 
     @Override
@@ -93,7 +93,7 @@ public class ClientHandler implements Runnable {
 
             
                 String im = "========================================";
-                gameDB.Game.lines(im);
+                lines(im);
                 
 
                 String cInString;
@@ -129,12 +129,8 @@ public class ClientHandler implements Runnable {
                         case "start" :
                             try 
                             {   
-                                create_sheet();
-                                while(rounds > 0)
-                                {
-                                    
-                                    game(inBuf);
-                                }
+                                
+                                gamePlay.roll(gameDB, inBuf, outBuf);
                         
                             } catch (Exception e) {
                                 
@@ -265,4 +261,33 @@ public class ClientHandler implements Runnable {
         }
     }
 
+
+    public  void game(BufferedReader inBuf_game) throws Exception
+    {   
+
+    } 
+
+    
+    public  void lines(String line) throws Exception
+    {   
+        String str = "";
+
+        for(int i = 0; i < line.length(); i++)
+        {
+
+            str = str + "=";
+
+        }
+        gameDB.sendln(str);
+
+    }
+    
+   
+
+    
+    
+    
+
 }
+
+

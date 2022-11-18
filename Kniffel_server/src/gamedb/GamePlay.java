@@ -1,37 +1,67 @@
 package gamedb;
-
 import java.io.BufferedReader;
+import java.io.PrintWriter;
 import java.util.HashMap;
-import gamedb.GameDB.*;
 
-public class Game {
-    public  void game(BufferedReader inBuf_game) throws Exception
+import gamedb.*;
+
+
+
+
+public class GamePlay {
+    
+    public GameDB GameDB;
+    public PrintWriter outBuf;
+    public HashMap<Integer, Integer> singel_points = new HashMap<Integer, Integer>();
+    public HashMap<String, Integer> combo_points   = new HashMap<String, Integer>();
+    public HashMap<String, Integer> dice_sheet = new HashMap<String, Integer>();
+    public String[] list = {"1","2","3","4","5", "6", "Bonuspoints", "Double", "Triple", "Quad", "Kniffel", "Small Street", "Big Street", "Full House" };
+    
+    public void lines(String in) throws Exception
     {   
+        String str = "";
+
+        for(char ch : in.toCharArray())
+        {
+
+           str = str + "="; 
+
+
+        }
+
+        GameDB.sendln(str);
+
+
+    }
+    
+    public void roll(GameDB gameDB, BufferedReader inBuf_dices, PrintWriter outBuf_game  ) throws Exception
+    {
+        GameDB = gameDB;
+        GameDB.sendln("Game starting soon");
 
         HashMap<Integer, Integer> rolled_dices = new HashMap<Integer,Integer>(); 
         HashMap<Integer, Integer> wurf = new HashMap<Integer, Integer>();
-        BufferedReader inBuf_dices = inBuf_game;
         
         try {
             
         
             String im = "========================================";
-            GameDB.class.sendln("Current Player: ");
-            for (int i = 0; i < gameDB.getNumberOfConnectedUsers(); i++)
+            GameDB.sendln("Current Player: ");
+            for (int i = 0; i < GameDB.getNumberOfConnectedUsers(); i++)
             {
 
-                gameDB.sendln(gameDB.getConnectedUserNichname(i));
+                GameDB.sendln(GameDB.getConnectedUserNichname(i));
 
 
             }
             
             
 
-            for(int i = 0; i < gameDB.getNumberOfConnectedUsers(); i++) 
+            for(int i = 0; i < GameDB.getNumberOfConnectedUsers(); i++) 
             {
 
                 lines(im);
-                gameDB.sendln("Throw || Player: " + gameDB.getConnectedUserNichname(i));
+                GameDB.sendln("Throw || Player: " + GameDB.getConnectedUserNichname(i));
                 lines(im);
 
                 
@@ -46,11 +76,11 @@ public class Game {
                 
                 for(int j = 0; j < wurf.size(); j++)
                 {
-                    gameDB.sendln("["+ (Integer)wurf.get(j) + "] ");
+                    GameDB.sendln("["+ (Integer)wurf.get(j) + "] ");
 
 
                 };
-                gameDB.sendln("");
+                GameDB.sendln("");
                 int dice_throws = 1;
 
                 while(dice_throws < 3)
@@ -63,16 +93,16 @@ public class Game {
                     if(dice_throws == 3)
                     {
                         Thread.sleep(2000);
-                        gameDB.sendln("The dices have fallen: ");
+                        GameDB.sendln("The dices have fallen: ");
                         for(int f = 0; f < rolled_dices.size(); f++)
                         {
 
-                            gameDB.sendln("[" + rolled_dices.get(f) + "] ");
+                            GameDB.sendln("[" + rolled_dices.get(f) + "] ");
 
                         }
-                        gameDB.sendln("");
+                        GameDB.sendln("");
                         lines(im);
-                        addtoDB(rolled_dices,inBuf_game, gameDB.getConnectedUserNichname(i));
+                        addtoDB(rolled_dices, inBuf_dices, GameDB.getConnectedUserNichname(i));
 
                     }
                 }
@@ -86,9 +116,10 @@ public class Game {
         } catch (Exception e) 
         {
                
-            outBuf.println("Errord during rolling: " + e.getMessage());
+            outBuf_game.println("Errord during rolling: " + e.getMessage());
         }
-    } 
+
+    }
 
     public void dice_roll(BufferedReader inBuf, HashMap<Integer,Integer> wurf) throws Exception
     {
@@ -96,7 +127,7 @@ public class Game {
         String bananenkuchen ="";
         lines(im);
                 
-        gameDB.sendln("Which dice should be rerolled:");
+        GameDB.sendln("Which dice should be rerolled:");
                 
         for(int m = 1; m < 6; m++)
         {
@@ -104,7 +135,7 @@ public class Game {
            bananenkuchen = bananenkuchen + ("[" + m + "] ");
                    
         }
-        gameDB.sendln(bananenkuchen);        
+        GameDB.sendln(bananenkuchen);        
         lines(im);
                 
                 
@@ -116,14 +147,8 @@ public class Game {
                 
         while (( wurf_w = inBuf.readLine()) != null && right == false)
         {
-            if(wurf_w == "exit")
-            {
-
-                cSocket.close();
-
-            }
             wurf_w = String.valueOf(wurf_w);
-            if(wurf_w == "")
+            if(wurf_w == "skip")
             {
                         
                 right = false;
@@ -138,7 +163,7 @@ public class Game {
                        {
                         // Minus one because array starts with 0;
                         new_roll = (int)(Math.random() * 5 + 1);
-                        gameDB.sendln("Dice " + würfel + " was rerolled to: " + new_roll);
+                        GameDB.sendln("Dice " + würfel + " was rerolled to: " + new_roll);
                         
                         würfel -= 1;
                         
@@ -157,7 +182,7 @@ public class Game {
 
                     lines(im);
                     
-                    gameDB.sendln("Current dices: ");
+                    GameDB.sendln("Current dices: ");
                     bananenkuchen = "";
                     
                     for(int a = 0; a < wurf.size();   a++ )
@@ -166,7 +191,7 @@ public class Game {
                         bananenkuchen += ("[" + wurf.get(a) + "] ");
 
                     }
-                    gameDB.sendln(bananenkuchen);
+                    GameDB.sendln(bananenkuchen);
 
                    
                     
@@ -186,21 +211,6 @@ public class Game {
 
 
     }
-    
-    public  void lines(String line) throws Exception
-    {   
-        String str = "";
-
-        for(int i = 0; i < line.length(); i++)
-        {
-
-            str = str + "=";
-
-        }
-        gameDB.sendln(str);
-
-    }
-    
     public void addtoDB(HashMap<Integer, Integer> rolled_dices, BufferedReader inBuf_togameDB, String nickname)
     {
         check(rolled_dices,inBuf_togameDB, nickname);
@@ -265,12 +275,12 @@ public class Game {
        
             
             
-            gameDB.sendln(nickname + " has:");
+            GameDB.sendln(nickname + " has:");
             
             single( one, two, three, four, five, six );
             combos(one, two, three, four, five, six );
             lines(im);
-            gameDB.sendln(nickname + " choice: Single or Combo or blank? ");
+            GameDB.sendln(nickname + " choice: Single or Combo or blank? ");
             boolean go_on = false;
             String single_desicon;
             String combo_desicon;
@@ -279,14 +289,14 @@ public class Game {
             {
                 
                 if(desicon.equals("Single" /*Single like Pringel  */) || desicon.equals("single"))
-                {   gameDB.sendln("Which Single:"/*Single Persons in you area */);
+                {   GameDB.sendln("Which Single:"/*Single Persons in you area */);
                     while (( single_desicon = inBuf_check.readLine()) != null &&  go_on == false  )
                     {
                         int int_desicon = Integer.valueOf(single_desicon);   
                         if(singel_points.containsKey(int_desicon) &&  dice_sheet.get(String.valueOf(int_desicon)) == null )
                         {
 
-                            gameDB.sendln(int_desicon + ": for " + singel_points.get(int_desicon) * int_desicon + "P");
+                            GameDB.sendln(int_desicon + ": for " + singel_points.get(int_desicon) * int_desicon + "P");
                             dice_sheet.put(String.valueOf(single_desicon), (Integer.valueOf(single_desicon) * Integer.valueOf(int_desicon) ));
                             go_on = true;
 
@@ -294,25 +304,25 @@ public class Game {
                         {
         
                             outBuf.println("You must take another option");
-                           annoying_counter += 1;
+                            annoying_counter += 1;
         
                         }else if(annoying_counter >= 5)
                         {   //Bob trys to ruin the fun dont be like Bob or we will find you
                             outBuf.println("What is your problem?" + nickname);
-                            cSocket.close();
+                            annoying_counter = 0;
         
                         }
                     }
                 }else if(desicon.equals("Combo") || desicon.equals("combo"))
                 {   
-                    gameDB.sendln("Which combo:");
+                    GameDB.sendln("Which combo:");
                     while (( combo_desicon = inBuf_check.readLine()) != null &&  go_on == false  )
                     {
                         
                         if(combo_points.containsKey(combo_desicon) && dice_sheet.get(combo_desicon) == null)
                         {
 
-                            gameDB.sendln(combo_desicon + ": for " + combo_points.get(combo_desicon) + "P");
+                            GameDB.sendln(combo_desicon + ": for " + combo_points.get(combo_desicon) + "P");
                             dice_sheet.put(String.valueOf(combo_desicon), combo_points.get(combo_desicon));
                             go_on = true;
 
@@ -324,21 +334,21 @@ public class Game {
         
                         }else if(annoying_counter >= 5)
                         {   
-                            gameDB.sendln("What is your problem?" + nickname);
-                            cSocket.close();
+                            GameDB.sendln("What is your problem?" + nickname);
+                            annoying_counter = 0;
         
                         }
                     }
                 }else if(annoying_counter >= 5)
                 {   
-                    gameDB.sendln("What is your problem?" + nickname  );
-                    cSocket.close();
+                    GameDB.sendln("What is your problem?" + nickname  );
+                    annoying_counter = 0;
 
                 }
                 else
                 {
 
-                    gameDB.sendln("You must take another option");
+                    GameDB.sendln("You must take another option");
                    annoying_counter += 1;
 
                 }
@@ -363,35 +373,35 @@ public class Game {
         
         singel_points.put(0, 666);
 
-        gameDB.sendln("Singles:");
+        GameDB.sendln("Singles:");
         if(one > 0)
         {
-            gameDB.sendln("[1] = " + one + "P");
+            GameDB.sendln("[1] = " + one + "P");
             singel_points.put(1, one);
         }else{singel_points.put(1, null);}
         if(two > 0)
         {
-            gameDB.sendln("[2] = " + two * 2 + "P");
+            GameDB.sendln("[2] = " + two * 2 + "P");
             singel_points.put(2, two);
         }else{singel_points.put(2, null);}
         if(three > 0)
         {
-            gameDB.sendln("[3] = " + three * 3 + "P");
+            GameDB.sendln("[3] = " + three * 3 + "P");
             singel_points.put(3, three);
         }else{singel_points.put(3, null);}
         if(four > 0)
         {
-            gameDB.sendln("[4] = " + four * 4 + "P");
+            GameDB.sendln("[4] = " + four * 4 + "P");
             singel_points.put(4, four);
         }else{singel_points.put(4, null);}
         if(five > 0)
         {
-            gameDB.sendln("[5] = " + five * 5 + "P");
+            GameDB.sendln("[5] = " + five * 5 + "P");
             singel_points.put(5, five);
         }else{singel_points.put(5, null);}
         if(six > 0)
         {
-            gameDB.sendln("[6] = " + six * 6 + "P");
+            GameDB.sendln("[6] = " + six * 6 + "P");
             singel_points.put(6, six);
         }else{singel_points.put(6, null);}
       
@@ -420,7 +430,7 @@ public class Game {
             if(numbers.get(banane) == 2)
             {
                 Double = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
-                gameDB.sendln("[Double]  = " + (int)Double + "P");
+                GameDB.sendln("[Double]  = " + (int)Double + "P");
                 combo_points.put("Double", Double);
 
             }
@@ -429,7 +439,7 @@ public class Game {
             if(numbers.get(banane) == 3)
             {
                 Triple = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
-                gameDB.sendln("[Triple]  = " + (int)Triple + "P" );
+                GameDB.sendln("[Triple]  = " + (int)Triple + "P" );
                 combo_points.put("Triple", Triple);
 
             }
@@ -437,7 +447,7 @@ public class Game {
             if(numbers.get(banane) == 4)
             {
                 Quad = 1 * one   + 2 * two  + 3 * three  + 4 * four  + 5 * five  + 6 * six ;
-                gameDB.sendln("[Quad]  = " + Quad + "P" );
+                GameDB.sendln("[Quad]  = " + Quad + "P" );
                 combo_points.put("Quad", Quad);
 
             }
@@ -445,8 +455,8 @@ public class Game {
             {    
                 //Kniffel is different you see it? 
                 
-                gameDB.sendln("{KNIFFEL}  = 50P || We bal" );
-                gameDB.sendln("");
+                GameDB.sendln("{KNIFFEL}  = 50P || We bal" );
+                GameDB.sendln("");
                 combo_points.put("KNIFFEL", 50);
 
             }
@@ -458,7 +468,7 @@ public class Game {
         if(one == 1 && two == 1 && three == 1 && four == 1 && five == 1)
         {
 
-            gameDB.sendln("[Small Street] = 30P");
+            GameDB.sendln("[Small Street] = 30P");
             combo_points.put("Small Street", 30);
 
 
@@ -467,7 +477,7 @@ public class Game {
         if(two == 1 && three == 1 && four == 1 && five == 1 && six == 1)
         {
 
-            gameDB.sendln("[Big Street] = 40P");
+            GameDB.sendln("[Big Street] = 40P");
             combo_points.put("Big Street", 40);
 
 
@@ -485,7 +495,7 @@ public class Game {
                     if(numbers.get(strong) == 2)
                     {
 
-                        gameDB.sendln("[Full House] = 25P");
+                        GameDB.sendln("[Full House] = 25P");
                         combo_points.put("Full House", 25);
                         
 
@@ -500,20 +510,7 @@ public class Game {
        
     
     }
-
-    public void create_sheet()
-    {
-
-        dice_sheet.put("0", 666);
-        for(int i = 1; i < list.length; i++)
-        {
-
-            dice_sheet.put(String.valueOf(list[i]), null);
-
-        }
-
-    }
     
-    
+
 
 }
