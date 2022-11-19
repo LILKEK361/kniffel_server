@@ -94,7 +94,7 @@ public class GamePlay {
         if(player_counter <= 5)
         {
 
-            GameDB.sendln("Current player: 5/5");
+            GameDB.sendln("Current players: "+ GameDB.getNumberOfConnectedUsers() + "/" + GameDB.getNumberOfConnectedUsers() );
             for(DataConnectedUser k : GameDB.connectedUserList)
             {
 
@@ -288,7 +288,7 @@ public class GamePlay {
                 }
                
                 round ++;
-                break;
+               
 
             }
 
@@ -353,9 +353,7 @@ public class GamePlay {
         GameDB.sendln("Combos:");
         HashMap<String, Integer> combo_points =  combos(ones,tows,threes,fours,fives,sixs);
 
-        GameDB.sendln(kokos);
-        GameDB.sendln("Singles or Combos or Blank");
-        GameDB.sendln(kokos);
+        
 
         add_to_db(single_points, combo_points);
 
@@ -393,7 +391,7 @@ public class GamePlay {
         {
             GameDB.sendln("[6] = " + sixs * 6 + "P");
             singel_points.put(5,sixs * 6);
-        }else {singel_points.put(0, null);}
+        }else {singel_points.put(5, null);}
 
         return singel_points;
         
@@ -505,137 +503,169 @@ public class GamePlay {
     public void add_to_db(HashMap<Integer, Integer> singles, HashMap<String, Integer> combos) throws Exception
     {
         String choice ="";
+        String single_choice ="";
+        String combo_choice ="";
+        String blank_choice ="";
         boolean desicon = false; 
         String nick = GameDB.getConnectedUserNichname(user_socket);
+        GameDB.sendln(kokos);
+        GameDB.sendln("Singles or Combos or Blank");
+        GameDB.sendln(kokos);
         while((choice = inReader.readLine()) != null && desicon == false)
         {
-
-            if(choice == "Singles")
+           
+            if(choice.equals("Singles") || choice.equals("singles"))
             {
                
                 GameDB.sendln("Which one:");
-                while((choice = inReader.readLine()) != null && desicon == false)
+                while((single_choice = inReader.readLine()) != null && desicon == false)
                 {
-
-                    int choosen_dice = Integer.valueOf(choice);
-                       
-                    choosen_dice -= 1;
-                    if(singles.get(choosen_dice) != null)
+                    if(!single_choice.equals(""))
                     {
-                        switch (nicknames.get(nick)) 
+                        int choosen_dice = Integer.valueOf(single_choice);
+                       
+                        choosen_dice -= 1;
+                        if(singles.get(choosen_dice) != null )
                         {
-                            case "player_1_sheet":
+                            switch (nicknames.get(nick)) 
+                            {
+                                case "player_1_sheet":
                                     
-                                player_1_sheet.put(choice, singles.get(choosen_dice));
-                                desicon = true; 
-                                break;
-                            case "player_2_sheet":
-                                desicon = true; 
-                                player_2_sheet.put(choice, singles.get(choosen_dice));
-                                break;
-                                
-                            case "player_3_sheet":
-                                player_3_sheet.put(choice, singles.get(choosen_dice));
-                                desicon = true; 
-                                break;
-                            case "player_4_sheet":
-                                player_4_sheet.put(choice, singles.get(choosen_dice));
-                                desicon = true; 
-                                break;
-                            case "player_5_sheet":
-                                player_5_sheet.put(choice, singles.get(choosen_dice));
-                                desicon = true; 
-                                break;
-                                
-                            default:
-                                   break;
-                        }
-                            
-                        break;
-                    }else{w.println("Pls choose another");}
+                                    if(player_1_sheet.get(single_choice) == null){
+                                    player_1_sheet.put(single_choice, singles.get(choosen_dice));
+                                    desicon = true;
+                                    }else{w.println("You must take another single");;}
+                                   
+                                    break;
+                                case "player_2_sheet":
+                                    if(player_2_sheet.get(single_choice) == null){
+                                    player_2_sheet.put(single_choice, singles.get(choosen_dice));
+                                    desicon = true;
+                                    }else{w.println("You must take another single");;}
+                                   
+                                    break;
+                                    
+                                case "player_3_sheet":
+                                    if(player_3_sheet.get(single_choice) == null){
+                                    player_3_sheet.put(single_choice, singles.get(choosen_dice));
+                                    desicon = true;
+                                    }else{w.println("You must take another single");;}
+                                    
+                                    break;
+                                case "player_4_sheet":
+                                    if(player_4_sheet.get(single_choice) == null){
+                                    player_4_sheet.put(single_choice, singles.get(choosen_dice));
+                                    desicon = true;
+                                    }else{w.println("You must take another single");;}
+                                   
+                                    break;
+                                case "player_5_sheet":
+                                    if(player_5_sheet.get(single_choice) == null){
+                                    player_5_sheet.put(single_choice, singles.get(choosen_dice));
+                                    desicon = true;
+                                    }else{w.println("You must take another single");;}
+                                   
+                                    break;
+                                    
+                                default:
+                                    break;
+                            }
+                            w.println("Pls press Enter to continue: ");
+                            break;
+                        }else{w.print("You cant use this dice");}
                      
+                    }else{w.println("Pls pick a dice");}
                 }
-            }
-            if(choice ==  "Combos"){
 
-                
+            }if(choice.equals("Combos") || choice.equals("combos"))
+            {
+
                     GameDB.sendln("Which one:");
-                    while((choice = inReader.readLine()) != null && desicon == false)
+                    while((combo_choice = inReader.readLine()) != null && desicon == false)
                     {
                         for(int b = 0; b < dice_sheet.length; b++)
                         {
 
-                            if(choice == dice_sheet[b])
+                            if(choice.equals(dice_sheet[b]))
                             {
                                 switch(nicknames.get(nick))
                                 {
                                     case "player_1_sheet":
                                 
-                                        if(player_1_sheet.get(choice) == null)
+                                        if(player_1_sheet.get(combo_choice) == null)
                                         {
-                                            player_1_sheet.put(choice, combos.get(choice));
-
-                                        }
-                                        desicon = true; 
+                                            player_1_sheet.put(combo_choice, combos.get(single_choice));
+                                            desicon = true; 
+                                        }else{w.println("you must take another combo");}
+                                        
                                         break;
                                     case "player_2_sheet":
-                                        if(player_2_sheet.get(choice) == null)
+                                        if(player_2_sheet.get(combo_choice) == null)
                                         {
-                                            player_2_sheet.put(choice, combos.get(choice));
-
-                                        }
-                                        desicon = true; 
+                                            player_2_sheet.put(combo_choice, combos.get(single_choice));
+                                            desicon = true; 
+                                        }{w.println("you must take another combo");}
+                                        
                                         break;
                                     case "player_3_sheet":
-                                        if(player_3_sheet.get(choice) == null)
+                                        if(player_3_sheet.get(combo_choice) == null)
                                         {
-                                            player_3_sheet.put(choice, combos.get(choice));
+                                            player_3_sheet.put(combo_choice, combos.get(single_choice));
+                                            desicon = true; 
 
-                                        }
+                                        }{w.println("you must take another combo");}
                                         desicon = true; 
                                         break;
                                     case "player_4_sheet":
-                                        if(player_4_sheet.get(choice) == null)
+                                        if(player_4_sheet.get(combo_choice) == null)
                                         {
-                                            player_4_sheet.put(choice, combos.get(choice));
+                                            player_4_sheet.put(combo_choice, combos.get(single_choice));
+                                            desicon = true; 
 
-                                        }
+                                        }{w.println("you must take another combo");}
                                         desicon = true; 
                                         break;
                                     case "player_5_sheet":
-                                        if(player_5_sheet.get(choice) == null)
+                                        if(player_5_sheet.get(combo_choice) == null)
                                         {
-                                            player_5_sheet.put(choice, combos.get(choice));
+                                            player_5_sheet.put(combo_choice, combos.get(single_choice));
+                                            desicon = true; 
 
-                                        }
+                                        }{w.println("you must take another combo");}
                                         desicon = true; 
                                         break;
 
-
-                                }
-
-
-                            };
-                        }
+                            }
+                            w.println("Pls press Enter to continue");;
+                            break;
+                        };
                     }
-                    break;
                 }
-                case "Blank":
-                    break;
-                default:
+                
+            }else if(choice.equals("blank") || choice.equals("Blank") )
+            {
 
-                    GameDB.sendln("Error!");
+                GameDB.sendln("Error!");
+                desicon = true;
+            }else if(!choice.equals("Singles") && !choice.equals("singles") && !choice.equals("Combos") && !choice.equals("combos") && !choice.equals("Blank") && !choice.equals("Blank")){
+                w.println("Pls choose another:");
+                
+                 
+
+                   
                 
                     
                    
             }
-            GameDB.sendln(kokos);
-            GameDB.sendln("Next Player");
-            GameDB.sendln(kokos);
-            break;
+       
+           
         }
-
+        GameDB.sendln(kokos);
+        GameDB.sendln("Next Player");
+        GameDB.sendln(kokos);
 
     }
 }
+
+
 
