@@ -217,12 +217,13 @@ public class GameDB {
         {   
 
             this.dsocket = n.getSocket();
-            PrintWriter w = new PrintWriter(this.dsocket.getOutputStream(), true);
+            PrintWriter w = new PrintWriter(dsocket.getOutputStream(), true);
 
-            w.print(s + "\n\r");
+            w.println(s + "\r");
 
         }
 
 
     }
+
 }
