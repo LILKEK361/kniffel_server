@@ -643,7 +643,19 @@ public class GamePlay {
                 }
                 
             }else if(choice.equals("blank") || choice.equals("Blank") )
-            {
+            {   
+
+                switch (nicknames.get(nick)) {
+                    case "player_1_sheet":
+                        
+                        break;
+                    case "player_2_sheet":
+                    case "player_3_sheet":
+                    case "player_4_sheet":
+                    case "player_5_sheet":
+                    default:
+                        break;
+                }
 
                 GameDB.sendln("Error!");
                 desicon = true;
