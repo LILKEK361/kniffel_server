@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -223,6 +224,20 @@ public class GameDB {
 
         }
 
+
+    }   
+    public String translate(CharBuffer chars)
+    {
+        String str = "";
+
+        for(int i = 0; i < chars.length(); i++) 
+        {
+
+            str += chars.charAt(i);
+
+        }
+
+        return str;
 
     }
 

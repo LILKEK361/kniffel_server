@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class GamePlay {
     private GameDB GameDB;
     public PrintWriter w;
     public BufferedReader inReader;
+    public CharBuffer inCharbuffer = CharBuffer.allocate(1024);
     
     //Data
     public HashMap<String, Integer> player_1_sheet = new HashMap<String, Integer>();
