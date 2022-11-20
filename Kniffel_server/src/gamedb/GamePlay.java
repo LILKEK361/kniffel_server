@@ -115,7 +115,8 @@ public class GamePlay {
                 for(DataConnectedUser Bananaboy : GameDB.connectedUserList)
                 {   
                     this.user_socket = Bananaboy.getSocket();
-                    inReader =  new BufferedReader(new InputStreamReader(user_socket.getInputStream()));
+                    InputStreamReader r = new InputStreamReader(user_socket.getInputStream());
+                    inReader =  new BufferedReader(r);
                     w = new PrintWriter(this.user_socket.getOutputStream(), true);
                     
                     GameDB.sendln("THROW: " + round +" || THROWS LEFT: " + dice_throws);
@@ -506,6 +507,7 @@ public class GamePlay {
         String single_choice ="";
         String combo_choice ="";
         String blank_choice ="";
+        
         boolean desicon = false; 
         String nick = GameDB.getConnectedUserNichname(user_socket);
         GameDB.sendln(kokos);
@@ -650,9 +652,17 @@ public class GamePlay {
                         
                         break;
                     case "player_2_sheet":
+
+                        break;
                     case "player_3_sheet":
+
+                        break;
                     case "player_4_sheet":
+
+                        break;
                     case "player_5_sheet":
+
+                        break;
                     default:
                         break;
                 }

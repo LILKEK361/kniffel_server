@@ -130,7 +130,7 @@ public class ClientHandler implements Runnable {
                             try 
                             {   
                                 
-                                gamePlay.game( gameDB);
+                                gamePlay.game(gameDB);
                         
                             } catch (Exception e) {
                                 
