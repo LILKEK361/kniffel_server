@@ -46,18 +46,7 @@ public class GamePlay implements Runnable{
     String kokos = "==================================";
 
 
-    @Override
-    public void run(GameDB gameDB)
-    {
-        try {
-            game(gameDB);
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-        game(gameDB);
-
-
-    }
+    
 
     public HashMap<String, Integer> get_data(HashMap<String, Integer> create_sheet)
     {
@@ -118,7 +107,7 @@ public class GamePlay implements Runnable{
             }
 
             
-            GameDB.sendln(kokos);;
+            GameDB.sendln(kokos);
             
 
 
