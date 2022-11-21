@@ -14,7 +14,7 @@ import gamedb.*;
 
 
 
-public class GamePlay {
+public class GamePlay implements Runnable{
     
     private GameDB GameDB;
     public PrintWriter w;
@@ -45,6 +45,19 @@ public class GamePlay {
     public int round = 1;
     String kokos = "==================================";
 
+
+    @Override
+    public void run(GameDB gameDB)
+    {
+        try {
+            game(gameDB);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        game(gameDB);
+
+
+    }
 
     public HashMap<String, Integer> get_data(HashMap<String, Integer> create_sheet)
     {
