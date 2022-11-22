@@ -14,7 +14,7 @@ import gamedb.*;
 
 
 
-public class GamePlay implements Runnable{
+public class GamePlay{
     
     private GameDB GameDB;
     public PrintWriter w;
@@ -92,7 +92,8 @@ public class GamePlay implements Runnable{
                 
                 player_counter ++;
             }
-            nicknames.put(GameDB.getConnectedUserNichname(user_socket), "player_%d_sheet".formatted(player_counter));
+            String player_sheet = "player_"+player_counter+"_sheet";
+            nicknames.put(GameDB.getConnectedUserNichname(user_socket),player_sheet );
 
         }
         if(player_counter <= 5)
@@ -600,7 +601,8 @@ public class GamePlay implements Runnable{
                                 
                                         if(player_1_sheet.get(combo_choice) == null)
                                         {
-                                            player_1_sheet.put(combo_choice, combos.get(single_choice));
+                                            player_1_sheet.put(combo_choice, combos.get(combo_choice));
+                                            GameDB.sendln(combo_choice +  "for" + combos.get(combo_choice));
                                             desicon = true; 
                                         }else{w.println("you must take another combo");}
                                         
@@ -608,7 +610,8 @@ public class GamePlay implements Runnable{
                                     case "player_2_sheet":
                                         if(player_2_sheet.get(combo_choice) == null)
                                         {
-                                            player_2_sheet.put(combo_choice, combos.get(single_choice));
+                                            player_2_sheet.put(combo_choice, combos.get(combo_choice));
+                                            GameDB.sendln(combo_choice +  "for" + combos.get(combo_choice));
                                             desicon = true; 
                                         }{w.println("you must take another combo");}
                                         
@@ -616,7 +619,8 @@ public class GamePlay implements Runnable{
                                     case "player_3_sheet":
                                         if(player_3_sheet.get(combo_choice) == null)
                                         {
-                                            player_3_sheet.put(combo_choice, combos.get(single_choice));
+                                            player_3_sheet.put(combo_choice, combos.get(combo_choice));
+                                            GameDB.sendln(combo_choice +  "for" + combos.get(combo_choice));
                                             desicon = true; 
 
                                         }{w.println("you must take another combo");}
@@ -625,7 +629,8 @@ public class GamePlay implements Runnable{
                                     case "player_4_sheet":
                                         if(player_4_sheet.get(combo_choice) == null)
                                         {
-                                            player_4_sheet.put(combo_choice, combos.get(single_choice));
+                                            player_4_sheet.put(combo_choice, combos.get(combo_choice));
+                                            GameDB.sendln(combo_choice +  "for" + combos.get(combo_choice));
                                             desicon = true; 
 
                                         }{w.println("you must take another combo");}
@@ -634,7 +639,8 @@ public class GamePlay implements Runnable{
                                     case "player_5_sheet":
                                         if(player_5_sheet.get(combo_choice) == null)
                                         {
-                                            player_5_sheet.put(combo_choice, combos.get(single_choice));
+                                            player_5_sheet.put(combo_choice, combos.get(combo_choice));
+                                            GameDB.sendln(combo_choice +  "for" + combos.get(combo_choice));
                                             desicon = true; 
 
                                         }{w.println("you must take another combo");}
