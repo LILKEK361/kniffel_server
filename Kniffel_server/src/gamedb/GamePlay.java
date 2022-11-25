@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.CharBuffer;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 
@@ -515,6 +516,8 @@ public class GamePlay{
         int max_length = 15;
         String empty = "";
         int points;
+        boolean cookie = false;
+        String choice;
         switch (nicknames.get(GameDB.getConnectedUserNichname(user_socket))) 
         {
            
@@ -529,6 +532,37 @@ public class GamePlay{
                     
                     
                     empty = "";
+                }
+                while((choice = inReader.readLine()) != null )
+                {
+
+                    char[]  bytes = choice.toCharArray();
+                    if(bytes.length == 1)
+                    {
+                       while(cookie == false)
+                       {
+                            for(int l = 0 ; l < dice_sheet.length; l++)
+                            {
+
+                                if(String.valueOf(dice_sheet[l]).equals(String.valueOf(bytes[0])))
+                                {
+                                    int dice = Integer.valueOf(bytes[0]) -1;
+                                    player_1_sheet.put(String.valueOf(bytes[0]), singles.get(dice));
+                                    
+
+                                }else
+                                {
+
+                                    w.println("Thats not a valid dice:");
+
+                                }
+
+                            }
+                        }
+                    }
+
+
+
                 }
                 break;
             case "player_2_sheet":
