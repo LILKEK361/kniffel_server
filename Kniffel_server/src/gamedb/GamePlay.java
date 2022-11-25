@@ -509,17 +509,20 @@ public class GamePlay{
     public void add_to_db(HashMap<Integer, Integer> singles, HashMap<String, Integer> combos) throws Exception
     {   
         GameDB.sendln(kokos);
-        GameDB.sendln(GameDB.getConnectedUserNichname(user_socket) + "+ Dicesheet");
+        GameDB.sendln(GameDB.getConnectedUserNichname(user_socket) + " + Dicesheet");
         GameDB.sendln("");
+        int max_length = 15;
+        String empty = "";
         switch (nicknames.get(GameDB.getConnectedUserNichname(user_socket))) 
         {
            
             case "player_1_sheet":
                 for (String s : dice_sheet)
                 {
-                   
-                    GameDB.sendln("["+ s + "]");
-
+                    for(int o = s.length();  o < max_length; o++)
+                    {empty += " ";}
+                    GameDB.sendln("["+ s + "]" + empty +  "|| " + player_1_sheet.get(s));
+                    empty = "";
                 }
                 break;
             case "player_2_sheet":
