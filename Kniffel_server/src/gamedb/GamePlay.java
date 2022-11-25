@@ -524,7 +524,10 @@ public class GamePlay{
                     for(int o = s.length();  o < max_length; o++)
                     {empty += " ";}
                     if(player_1_sheet.get(s) != null){points = player_1_sheet.get(s);}else{points = 0;}
+                    if(s.equals("Bonuspoints") || s.equals("Final Points")){GameDB.sendln(kokos); };
                     GameDB.sendln("["+ s + "]" + empty +  "|| " + points);
+                    
+                    
                     empty = "";
                 }
                 break;
