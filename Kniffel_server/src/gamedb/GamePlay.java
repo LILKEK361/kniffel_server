@@ -37,7 +37,7 @@ public class GamePlay{
     int choice;
 
 
-    public String[] dice_sheet = {"1","2","3","4","5","6","Bonuspoints","Double","Tripel","Quad","Kniffel","Full House","Small Street","Big Street","Final Points"};
+    public String[] dice_sheet = {"1","2","3","4","5","6","Bonuspoints", "", "Double","Tripel","Quad","Kniffel","Full House","Small Street","Big Street","Final Points"};
     public Socket user_socket;
     public int player_counter = 0  ;
     public boolean error = false;
@@ -294,6 +294,7 @@ public class GamePlay{
                 }
                
                 round ++;
+                dice_throws--;
                
 
             }
@@ -513,6 +514,7 @@ public class GamePlay{
         GameDB.sendln("");
         int max_length = 15;
         String empty = "";
+        int points;
         switch (nicknames.get(GameDB.getConnectedUserNichname(user_socket))) 
         {
            
@@ -521,7 +523,8 @@ public class GamePlay{
                 {
                     for(int o = s.length();  o < max_length; o++)
                     {empty += " ";}
-                    GameDB.sendln("["+ s + "]" + empty +  "|| " + player_1_sheet.get(s));
+                    if(player_1_sheet.get(s) != null){points = player_1_sheet.get(s);}else{points = 0;}
+                    GameDB.sendln("["+ s + "]" + empty +  "|| " + points);
                     empty = "";
                 }
                 break;
@@ -536,6 +539,7 @@ public class GamePlay{
         
         }
         GameDB.sendln("Waiting....");
+        GameDB.sendln(kokos);
         Thread.sleep(5000);
     }
 }
