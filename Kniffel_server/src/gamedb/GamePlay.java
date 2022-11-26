@@ -541,14 +541,13 @@ public class GamePlay{
                     {
                        while(cookie == false)
                        {
-                            for(int l = 0 ; l < dice_sheet.length; l++)
-                            {
-
-                                if(String.valueOf(dice_sheet[l]).equals(String.valueOf(bytes[0])))
+                            
+                                int dice = bytes[0] -1;
+                                if(dice_sheet.contains() && singles.get(dice) != null && player_1_sheet.get(String.valueOf(bytes[0])) != null)
                                 {
-                                    int dice = Integer.valueOf(bytes[0]) -1;
-                                    player_1_sheet.put(String.valueOf(bytes[0]), singles.get(dice));
                                     
+                                    player_1_sheet.put(String.valueOf(bytes[0]), singles.get(dice));
+                                    cookie = true;
 
                                 }else
                                 {
@@ -557,7 +556,7 @@ public class GamePlay{
 
                                 }
 
-                            }
+                            
                         }
                     }
 
