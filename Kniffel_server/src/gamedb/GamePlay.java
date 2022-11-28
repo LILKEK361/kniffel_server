@@ -7,6 +7,7 @@ import java.nio.CharBuffer;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import javax.management.modelmbean.DescriptorSupport;
 
@@ -39,6 +40,7 @@ public class GamePlay{
 
 
     public String[] dice_sheet = {"1","2","3","4","5","6","Bonuspoints", "", "Double","Tripel","Quad","Kniffel","Full House","Small Street","Big Street","Final Points"};
+    
     public Socket user_socket;
     public int player_counter = 0  ;
     public boolean error = false;
@@ -543,7 +545,8 @@ public class GamePlay{
                        {
                             
                                 int dice = bytes[0] -1;
-                                if(dice_sheet.contains() && singles.get(dice) != null && player_1_sheet.get(String.valueOf(bytes[0])) != null)
+                            
+                                if(options.contains(String.valueOf(bytes[0])) && singles.get(dice) != null && player_1_sheet.get(String.valueOf(bytes[0])) == null)
                                 {
                                     
                                     player_1_sheet.put(String.valueOf(bytes[0]), singles.get(dice));
@@ -558,6 +561,25 @@ public class GamePlay{
 
                             
                         }
+                    }else if(bytes.length > 1)
+                    {
+                        while(cookie == false)
+                        {
+                            String ppp = bytes.toString();
+
+                            if(options.contains(ppp) && combos.get(ppp) != null && player_1_sheet.get(ppp) == null )
+                            {
+
+                                player_1_sheet.put(ppp, combos.get(ppp));
+
+                                cookie = true;
+                            }
+
+
+
+
+                        }
+
                     }
 
 
